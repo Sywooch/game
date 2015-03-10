@@ -2,12 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\CategorySearch;
 use Yii;
 use app\models\Game;
 use app\models\GameSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+use yii\data\ActiveDataProvider;
+use app\models\Category;
 
 /**
  * GameController implements the CRUD actions for Game model.
@@ -45,6 +49,30 @@ class GameController extends Controller
      * main page of site
      */
     public function actionMain(){
+
+        //show all category list
+        $queryCategory = \app\models\Category::find();
+        $categoryProvider = new ActiveDataProvider([
+            'query' => $queryCategory,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        //show all game list
+        $queryGame = \app\models\Game::find();
+        $gameProvider = new ActiveDataProvider([
+            'query' => $queryGame,
+            'pagination' => [
+                'pageSize' => 200,
+            ],
+        ]);
+
+
+        return $this->render('main', [
+            'categoryProvider' => $categoryProvider,
+            'gameProvider'=>$gameProvider,
+        ]);
 
     }
 

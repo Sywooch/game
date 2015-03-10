@@ -10,8 +10,19 @@ $config = [
 
     'defaultRoute' => 'game/main',
 
+    //when update site
+    //'catchAll' => ['site/offline'],
+
     'components' => [
 
+        'urlManager' => [
+            //'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                //''=>'game/main'
+            ],
+        ],
 
 
         'authManager' => [
