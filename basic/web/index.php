@@ -1,0 +1,18 @@
+<?php
+$start = microtime(true);
+ini_set("memory_limit", "2040M");
+// comment out the following two lines when deployed to production
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+
+require(__DIR__ . '/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+
+$config = require(__DIR__ . '/../config/web.php');
+
+(new yii\web\Application($config))->run();
+?>
+<?=round(memory_get_usage(true)/(1024*1024),3)."MB<br>";
+$time = microtime(true) - $start;
+printf('Скрипт выполнялся %.4F сек.', $time);
+
