@@ -8,8 +8,10 @@
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 ?>
-<div class="post">
+<div class="category">
+    <!--'@web/images/'. -->
+    <?= Html::img($model->img, ['alt' => $model->title]) ?>
     <h2><?= Html::encode($model->title) ?></h2>
 
-    <?= HtmlPurifier::process($model->text) ?>
+
 </div>

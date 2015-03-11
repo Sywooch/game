@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%category}}".
@@ -29,8 +30,9 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'img'], 'required'],
-            [['title', 'img'], 'string', 'max' => 255]
+            [['title', 'alias'], 'required'],
+            [['title', 'alias'], 'string', 'max' => 255],
+            [['description'], 'string', 'max' => 5255]
         ];
     }
 
@@ -53,4 +55,25 @@ class Category extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Game::className(), ['category_id' => 'id']);
     }
+
+    /*
+     * get all list category
+     */
+    static function getListCategory(){
+        return Yii::$app->db->createCommand('SELECT title, alias FROM tbl_category')->cache(3600)->queryAll();
+    }
+
+    /*
+     * dropdown list for menu
+     */
+    static function dropDownMenu(){
+
+        $category_list = Category::getListCategory();
+        $result = array();
+        foreach($category_list as $category){
+            $result[]=['label' => $category['title'], 'url' =>Url::to(['/category/view','alias'=>$category['alias']])];//
+        }
+        return $result;
+    }
+
 }

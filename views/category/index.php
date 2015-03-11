@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Categories';
+$this->title = 'Разделы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-index">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title',
-            'img',
+            //'img',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

@@ -7,7 +7,8 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Game */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Games', 'url' => ['index']];
+//$this->params['breadcrumbs'][] = ['label' => 'Игры', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->category->title, 'url' => [$model->category->alias]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="game-view">

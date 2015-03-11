@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use yii\widgets\ListView;
+use yii\bootstrap\Carousel;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\GameSearch */
@@ -9,30 +11,64 @@ use yii\grid\GridView;
 
 $this->title = 'Games';
 $this->params['breadcrumbs'][] = $this->title;
+
+
+$this->registerMetaTag([
+    'name' => 'description',
+    'content' => 'some description'
+]);
+
 ?>
 <div class="game-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
 
-    <p>
-        <?= Html::a('Create Game', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    /*
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'category_id',
-            'title',
-            'file',
-            'img',
-
-            ['class' => 'yii\grid\ActionColumn'],
+    echo Carousel::widget([
+        'items' => [
+            // the item contains only the image
+            '<img src="http://onlineguru.ru/i/online/headslider/top.png"/>',
+            // equivalent to the above
+            ['content' => '<img src="http://onlineguru.ru/f/online/genres/smallpic/softgames.png"/>'],
+            // the item contains both the image and the caption
+            [
+                'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg"/>',
+                'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
+                //'options' => [...],
         ],
-    ]); ?>
+    ]
+]);*/
+
+    echo ListView::widget([
+        'dataProvider' => $dataProvider,
+        'itemView' => '_game',
+
+        'pager'        => [
+
+            'firstPageLabel'    => '1111',
+
+//            'lastPageLabel'     => Glyph::icon(Glyph::ICON_FAST_FORWARD),
+//
+//            'nextPageLabel'     => Glyph::icon(Glyph::ICON_STEP_FORWARD),
+//
+//            'prevPageLabel'     => Glyph::icon(Glyph::ICON_STEP_BACKWARD),
+
+        ],
+        //'summary'=>'',
+        //'layout' => '{summary}\n{items}\n{pager}',
+        'layout' => '{pager}<br>{items}',
+    ]);
+    ?>
 
 </div>
+<style>
+    div.list-view>div{
+        columns: 200px auto;
+        display: inline-block;
+    }
+    div.title-game{
+        width: 195px;
+    }
+</style>
+

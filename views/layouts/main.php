@@ -1,9 +1,13 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+
+
+use yii\widgets\Menu;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -26,34 +30,53 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'My Company',
+                'brandLabel' => 'Flash games',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar-default navbar-fixed-top nav-pills',
                 ],
             ]);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
-                    Yii::$app->user->isGuest ?
-                        ['label' => 'Login', 'url' => ['/site/login']] :
-                        ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/site/logout'],
-                            'linkOptions' => ['data-method' => 'post']],
+                    //['label' => 'Home', 'url' => ['/site/index']],
+                    [
+                        'label' => 'Разделы',
+                        'items' =>
+                            \app\models\Category::dropDownMenu(),
+                    ],
+
+                    ['label' => 'Вопрос/Ответ', 'url' => ['/site/answer']],
+                    ['label' => 'Обратная связь', 'url' => ['/site/contact']],
+//                    Yii::$app->user->isGuest ?
+//                        ['label' => 'Login', 'url' => ['/site/login']] :
+//                        ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+//                            'url' => ['/site/logout'],
+//                            'linkOptions' => ['data-method' => 'post']],
                 ],
             ]);
             NavBar::end();
         ?>
 
         <div class="container">
-            <?= Breadcrumbs::widget([
+            <?php
+            echo  Breadcrumbs::widget([
+                'homeLink' => [
+                    'label' => '<i class="fa fa-home"></i>' . Yii::t('yii', 'Главная'),
+                    'url' => Yii::$app->homeUrl,
+                    'encode' => false// Requested feature
+                ],
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]) ?>
+            ])
+             ?>
+
+
+
+
+
             <?= $content ?>
         </div>
+
     </div>
 
     <footer class="footer">

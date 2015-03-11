@@ -45,6 +45,10 @@ class GameSearch extends Game
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+            ],
         ]);
 
         $this->load($params);

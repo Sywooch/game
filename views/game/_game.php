@@ -6,14 +6,12 @@
  * Time: 15:52
  */
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
+use yii\helpers\Url;
 ?>
-<div class="post">
+<div class="game">
 
-    <?= Html::img('@web/images/'.$model->image, ['alt' => 'My logo']) ?>
+    <?= Html::img('@web/img/'.$model->img, ['alt' => 'My logo']) ?>
 
-    <h2><?= Html::encode($model->title) ?></h2>
-
-<!--    --><?//= HtmlPurifier::process($model->text) ?>
+    <div class="title-game"><?= Html::a(Html::encode($model->title),Url::to([$model->alias])); ?></div>
 </div>
 

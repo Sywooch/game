@@ -18,6 +18,19 @@ use app\models\Category;
  */
 class GameController extends Controller
 {
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['post'],
+//                ],
+//            ],
+//        ];
+//    }
+
+
     public function behaviors()
     {
         return [
@@ -27,6 +40,35 @@ class GameController extends Controller
                     'delete' => ['post'],
                 ],
             ],
+//            [
+//                'class' => 'yii\filters\PageCache',
+//                'only' => ['index'],
+//                'duration' => 120,
+//                'variations' => [
+//                    \Yii::$app->language,
+//                ],
+////                'dependency' => [
+////                    'class' => 'yii\caching\DbDependency',
+////                    'sql' => 'SELECT COUNT(*) FROM tbl_game',
+////                ],
+//            ],
+//            [
+//                'class' => 'yii\filters\HttpCache',
+//                'only' => ['index'],
+//                'lastModified' => function ($action, $params) {
+//                        $q = new \yii\db\Query();
+//                        return $q->from('post')->max('updated_at');
+//                    },
+//            ],
+
+//            [
+//                'class' => 'yii\filters\HttpCache',
+//                'only' => ['view'],
+//                'etagSeed' => function ($action, $params) {
+//                        $post = $this->findModel(\Yii::$app->request->get('id'));
+//                        return serialize([$post->title, $post->content]);
+//                    },
+//            ],
         ];
     }
 
@@ -50,29 +92,34 @@ class GameController extends Controller
      */
     public function actionMain(){
 
-        //show all category list
-        $queryCategory = \app\models\Category::find();
-        $categoryProvider = new ActiveDataProvider([
-            'query' => $queryCategory,
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
+//        $parser = new \app\models\Parser();
+//        $parser->parseGameCategory();
 
-        //show all game list
-        $queryGame = \app\models\Game::find();
-        $gameProvider = new ActiveDataProvider([
-            'query' => $queryGame,
-            'pagination' => [
-                'pageSize' => 200,
-            ],
-        ]);
+//        //show all category list
+//        $queryCategory = \app\models\Category::find();
+//        $categoryProvider = new ActiveDataProvider([
+//            'query' => $queryCategory,
+//            'pagination' => [
+//                'pageSize' => 20,
+//            ],
+//        ]);
+//
+//        //show all game list
+//        $queryGame = \app\models\Game::find();
+//        $gameProvider = new ActiveDataProvider([
+//            'query' => $queryGame,
+//            'pagination' => [
+//                'pageSize' => 200,
+//            ],
+//        ]);
+//
+//
+//        return $this->render('main', [
+//            'categoryProvider' => $categoryProvider,
+//            'gameProvider'=>$gameProvider,
+//        ]);
 
 
-        return $this->render('main', [
-            'categoryProvider' => $categoryProvider,
-            'gameProvider'=>$gameProvider,
-        ]);
 
     }
 
@@ -81,10 +128,10 @@ class GameController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($alias)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($alias),
         ]);
     }
 
@@ -145,9 +192,9 @@ class GameController extends Controller
      * @return Game the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($alias)
     {
-        if (($model = Game::findOne($id)) !== null) {
+        if (($model = Game::findOne(['alias'=>$alias])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

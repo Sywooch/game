@@ -1,14 +1,16 @@
 <?php
 
 $params = require(__DIR__ . '/params.php');
-
+Yii::setAlias('@common', dirname(__DIR__));
 $config = [
     'id' => 'basic',
+    'timeZone'=>'Europe/Moscow',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'ru',
+    'sourceLanguage' => 'ru',
 
-
-    'defaultRoute' => 'game/main',
+    //'defaultRoute' => 'game/index',
 
     //when update site
     //'catchAll' => ['site/offline'],
@@ -16,11 +18,49 @@ $config = [
     'components' => [
 
         'urlManager' => [
-            //'enablePrettyUrl' => true,
+            'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'rules' => [
-                //''=>'game/main'
+
+                ''=>'game/index',
+                'answer'=>'site/answer',
+                'contact'=>'site/contact',
+
+                //'<controller:\w+>' => '<controller>/index',
+
+                '<controller:\w+>/page/<page:\d+>' => '<controller>/index',
+
+
+
+                //'game/<id:\d+>' => 'game/view',
+                //'game/<alias:\w+>' => 'game/view',
+                //'<controller:\w+>/<slug:\w+>'=>'game/view',
+                //'suffix' => '.html',
+                //'category/index' => 'category/index',
+                'game/<alias>' => 'game/view',
+
+                'categorys' => 'category/index',
+                //'post/<id:\d+>' => 'post/view',
+
+                'category/<alias>' => 'category/view',
+                //'category/<alias>' => 'category/view',
+
+
+
+                'site/captcha'=>'site/captcha',
+
+                //'<controller:\w+>/<alias:\w+>' => '<controller>/view',
+                //'<controller:\w+>/<id:\w+>' => '<controller>/view',
+
+
+
+//                [
+//                    'pattern' => 'games',
+//                    'route' => 'game/index',
+//                    //'suffix' => '.json',
+//                ],
+
             ],
         ],
 

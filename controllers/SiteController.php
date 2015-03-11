@@ -93,4 +93,11 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    /*
+     * страница вопрос-ответ
+     */
+    public function actionAnswer(){
+        return $this->render('answer');
+    }
 }

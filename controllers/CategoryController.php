@@ -5,9 +5,12 @@ namespace app\controllers;
 use Yii;
 use app\models\Category;
 use app\models\CategorySearch;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+use yii\data\ActiveDataProvider;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -46,10 +49,30 @@ class CategoryController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($alias)
     {
+
+
+        $category = $this->findModel($alias);
+
+
+        $query = new Query();
+        $query->select(['img','title','alias']);
+        $query->from('tbl_game');
+        $query->where(['category_id'=>$category->id]);
+
+        //show all game list
+        //$queryGame = \app\models\Game::find(['category_id'=>$category->id]);
+        $gameProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $category,
+            'gameProvider'=>$gameProvider,
         ]);
     }
 
@@ -110,9 +133,9 @@ class CategoryController extends Controller
      * @return Category the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($alias)
     {
-        if (($model = Category::findOne($id)) !== null) {
+        if (($model = Category::findOne(['alias'=>$alias])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
