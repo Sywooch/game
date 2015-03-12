@@ -38,10 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
 
-/*    echo StarRating::widget([
-        'name' => 'rating',
-        'pluginOptions' => ['size' => 'lg']
-    ]);*/
+
 
 
 //    echo '<label class="control-label">Rating</label>';
@@ -91,8 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) */?>
 
     </p>
-
-
+<?php
+/*    echo StarRating::widget([
+    'name' => 'rating',
+    'pluginOptions' => ['size' => 'lg','disabled'=>true,]
+    ]);
+*/
+?>
     <script type="text/javascript">(function() {
             if (window.pluso)if (typeof window.pluso.start == "function") return;
             if (window.ifpluso==undefined) { window.ifpluso = 1;
@@ -130,6 +132,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ]);
         ?>
     </div>
+
+
+    <!-- блок комментариев  https://vk.com/dev/Comments -->
+
 </div>
 
 <style>
