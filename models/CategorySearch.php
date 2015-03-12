@@ -61,6 +61,12 @@ class CategorySearch extends Category
 
         $query->andFilterWhere(['like', 'title', $this->title]);
 
+
+        $dataProvider->pagination = [
+            'defaultPageSize' => 12,
+            'pageSizeLimit' => [12, 100],
+        ];
+
         return $dataProvider;
     }
 }

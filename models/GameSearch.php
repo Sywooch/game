@@ -46,8 +46,8 @@ class GameSearch extends Game
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'forcePageParam' => false,
-                'pageSizeParam' => false,
+                //'forcePageParam' => false,
+                //'pageSizeParam' => false,
             ],
         ]);
 
@@ -67,6 +67,58 @@ class GameSearch extends Game
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'file', $this->file])
             ->andFilterWhere(['like', 'img', $this->img]);
+
+        $dataProvider->pagination = [
+            'defaultPageSize' => 24,
+            'pageSizeLimit' => [12, 100],
+        ];
+
+        return $dataProvider;
+    }
+
+    public function similarSearch($category_id, $id){
+
+        //$query = Game::find();
+
+
+        $query = (new \yii\db\Query())
+            ->from('tbl_game')
+            ->where(['category_id'=>$category_id])
+             ->andWhere(['not in', 'id', $id]);
+
+
+        //$query->andFilterWhere(['category_id' => $this->category_id]);
+
+        //$query->limit(12);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                //'forcePageParam' => false,
+                //'pageSizeParam' => false,
+            ],
+        ]);
+
+
+
+
+        //$this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+
+//        $query->andFilterWhere(['like', 'title', $this->title])
+//            ->andFilterWhere(['like', 'file', $this->file])
+//            ->andFilterWhere(['like', 'img', $this->img]);
+
+        $dataProvider->pagination = [
+            'defaultPageSize' => 12,
+            //'pageSizeLimit' => [12, 100],
+        ];
 
         return $dataProvider;
     }

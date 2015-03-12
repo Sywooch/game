@@ -39,6 +39,7 @@ $config = [
                 //'suffix' => '.html',
                 //'category/index' => 'category/index',
                 'game/<alias>' => 'game/view',
+                //'game/<alias>' => 'game/view',
 
                 'categorys' => 'category/index',
                 //'post/<id:\d+>' => 'post/view',
@@ -49,6 +50,12 @@ $config = [
 
 
                 'site/captcha'=>'site/captcha',
+
+
+//
+//                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+//                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+//                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 
                 //'<controller:\w+>/<alias:\w+>' => '<controller>/view',
                 //'<controller:\w+>/<id:\w+>' => '<controller>/view',

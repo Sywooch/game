@@ -46,7 +46,12 @@ class Game extends \yii\db\ActiveRecord
             [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'alias'], 'required'],
             [['category_id'], 'integer'],
             [['title', 'file', 'img','pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
-            [['description'], 'string', 'max' => 6255]
+            [['description'], 'string', 'max' => 6255],
+            // normalize "alias" input
+            ['alias', 'filter', 'filter' => function ($value) {
+                    // normalize alias input here
+                    return self::str2url($value);
+                }],
         ];
     }
 
@@ -100,7 +105,7 @@ class Game extends \yii\db\ActiveRecord
         );
         return strtr($string, $converter);
     }
-    function str2url($str) {
+    static function str2url($str) {
         // переводим в транслит
         $str = Game::rus2translit($str);
         // в нижний регистр
@@ -110,5 +115,21 @@ class Game extends \yii\db\ActiveRecord
         // удаляем начальные и конечные '-'
         $str = trim($str, "-");
         return $str;
+    }
+
+    /*
+     * find similar games for current game in current category of game
+     */
+    public function similarGames($limit = 9){
+        //$searchModel = new GameSearch();
+        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $queryGame = \app\models\Game::find();
+        $gameProvider = new ActiveDataProvider([
+            'query' => $queryGame,
+            'pagination' => [
+                'pageSize' => 200,
+            ],
+        ]);
     }
 }

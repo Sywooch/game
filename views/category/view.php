@@ -39,6 +39,17 @@ $this->params['breadcrumbs'][] = $this->title;
     echo ListView::widget([
         'dataProvider' => $gameProvider,
         'itemView' => '_game',
+        'pager'        => [
+
+            'firstPageLabel'    => 'Начало',
+
+            'lastPageLabel'     => 'Конец',
+//
+//            'nextPageLabel'     => Glyph::icon(Glyph::ICON_STEP_FORWARD),
+//
+//            'prevPageLabel'     => Glyph::icon(Glyph::ICON_STEP_BACKWARD),
+
+        ],
         //'summary'=>'',
         //'layout' => '{summary}\n{items}\n{pager}',
         'layout' => '{pager}<br>{items}',

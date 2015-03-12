@@ -46,9 +46,9 @@ $this->registerMetaTag([
 
         'pager'        => [
 
-            'firstPageLabel'    => '1111',
+            'firstPageLabel'    => 'Начало',
 
-//            'lastPageLabel'     => Glyph::icon(Glyph::ICON_FAST_FORWARD),
+            'lastPageLabel'     => 'Конец',
 //
 //            'nextPageLabel'     => Glyph::icon(Glyph::ICON_STEP_FORWARD),
 //

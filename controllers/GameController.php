@@ -78,6 +78,21 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
+
+//        $games = Yii::$app->db->createCommand('SELECT id, title FROM tbl_game')->queryAll();
+//
+//        if($games){
+//            foreach($games as $game){
+//
+//                $alias = Game::str2url($game['title']);
+//
+//                $params = [':id'=>$game['id'], ':alias'=>$alias];
+//
+//                Yii::$app->db->createCommand('UPDATE tbl_game SET alias=:alias WHERE id=:id')->bindValues($params)->execute();
+//            }
+//        }
+
+
         $searchModel = new GameSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -130,8 +145,18 @@ class GameController extends Controller
      */
     public function actionView($alias)
     {
+        //find game by alias
+        $model = $this->findModel($alias);
+
+        //find others games from this category(similar-games)
+        $searchModel = new GameSearch();
+        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $similar = $searchModel->similarSearch($model->category_id, $model->id);
+
         return $this->render('view', [
-            'model' => $this->findModel($alias),
+            'model' => $model,
+            'similarDataProvider'=>$similar,
         ]);
     }
 
