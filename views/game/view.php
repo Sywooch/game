@@ -4,12 +4,23 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
 use kartik\rating\StarRating;
-
+use yii\web\View;
 /* @var $this yii\web\View */
 /* @var $model app\models\Game */
 
 $this->title = $model->title;
 
+$this->registerJsFile('http://userapi.com/js/api/openapi.js?116',['depends' => [\yii\web\JqueryAsset::className()]]);
+
+
+
+// Просто подключаем один файл:
+
+//$this->registerCssFile('@app/assets/css/style.css');
+//
+//// Фрагмент:
+//$this->registerJs('alert("message");', self::POS_READY, 'myKey');
+//$this->registerCss('.class{color: red;}');
 
 
 $this->registerMetaTag([
@@ -27,7 +38,12 @@ $this->registerMetaTag([
 $this->params['breadcrumbs'][] = ['label' => $model->category->title, 'url' => Url::to(['/category/view','alias'=>$model->category->alias])];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="game-view">
+
+
+
+
+
+<div class="game-view" >
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -56,26 +72,37 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
-    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" width="468" height="60" id="mymoviename">
+    <div class="game-flash">
+        <div class="game-flash-file">
+            <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" width="468" height="60" id="mymoviename">
+                <param name="movie" value="http://www.tizag.com/pics/example.swf" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#ffffff" />
+                <embed src="/flash/<?=$model->file?>" quality="high" bgcolor="#ffffff"
+                       width="728" height="546"
+                       name="mymoviename" align="" type="application/x-shockwave-flash"
+                       pluginspage="http://www.macromedia.com/go/getflashplayer">
+                </embed>
+            </object>
+            <div class="game-flash-buttons">
+                <div id="fullscreen">
+<!--                    <a href="#" onclick="ResizeFlash(546, 728); return false" rel="nofollow">Во весь экран</a>,'style'=>'width:181px;'  -->
+                    <?=Html::a('Во весь экран', '#', ['class' => 'btn btn-primary flash-buttons','rel'=>'nofollow']);?>
 
-        <param name="movie" value="http://www.tizag.com/pics/example.swf" />
+                    <?=Html::a('Скачать плагин Unity3D', '/file/Unity3d.rar', ['class' => 'btn btn-primary  flash-buttons','alt'=>'Скачать плагин Unity3D', 'target'=>'_blank',]);?>
 
-        <param name="quality" value="high" />
-
-        <param name="bgcolor" value="#ffffff" />
-
-        <embed src="/flash/<?=$model->file?>" quality="high" bgcolor="#ffffff"
-
-               width="728" height="546"
-
-               name="mymoviename" align="" type="application/x-shockwave-flash"
-
-               pluginspage="http://www.macromedia.com/go/getflashplayer">
+                    <?=Html::a('Не работает ?', ['/answer/'], ['class' => 'btn btn-primary  flash-buttons','target'=>'_blank','alt'=>'Не работает ?']);?>
 
 
-        </embed>
+                    <?=Html::a('К моим играм', '#', ['class' => 'btn btn-primary  flash-buttons','alt'=>'Добавить в избранное']);?>
 
-    </object>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 
     <p>
         <?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -95,29 +122,18 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
 */
 ?>
-    <script type="text/javascript">(function() {
-            if (window.pluso)if (typeof window.pluso.start == "function") return;
-            if (window.ifpluso==undefined) { window.ifpluso = 1;
-                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-                s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
-                s.src = ('https:' == window.location.protocol ? 'https' : 'http')  + '://share.pluso.ru/pluso-like.js';
-                var h=d[g]('body')[0];
-                h.appendChild(s);
-            }})();</script>
-    <div class="pluso" data-background="transparent" data-options="big,square,line,horizontal,nocounter,theme=08" data-services="vkontakte,odnoklassniki,facebook,twitter,google,moimir"></div>
 
 
-    <?php
 
-/*
-    echo \ijackua\sharelinks\ShareLinks::widget(
-        [
-            'viewName' => '@app/views/game/sharelinks.php'   //custom view file for you links appearance
-        ]
-    );
-*/
 
-    ?>
+    <div class="social-likes" data-counters="no">
+        <div class="facebook" title="Поделиться ссылкой на Фейсбуке">Facebook</div>
+        <div class="twitter" title="Поделиться ссылкой в Твиттере">Twitter</div>
+        <div class="mailru" title="Поделиться ссылкой в Моём мире">Мой мир</div>
+        <div class="vkontakte" title="Поделиться ссылкой во Вконтакте">Вконтакте</div>
+        <div class="odnoklassniki" title="Поделиться ссылкой в Одноклассниках">Одноклассники</div>
+        <div class="plusone" title="Поделиться ссылкой в Гугл-плюсе">Google+</div>
+    </div>
 
 
     <h4>Похожие игры</h4>
@@ -134,16 +150,29 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 
+
     <!-- блок комментариев  https://vk.com/dev/Comments -->
+
+    <!-- Put this div tag to the place, where the Comments block will be -->
+    <div id="vk_comments"></div>
+
+    <?php
+        $this->registerJs('VK.init({apiId: 4825408, onlyWidgets: true});',View::POS_END, 'myKey');
+        $this->registerJs('VK.Widgets.Comments("vk_comments", {limit: 10, width: "665", attach: "*"});',View::POS_END, 'myKey1');
+    ?>
+
+    <script type="text/javascript">
+
+
+
+    </script>
 
 </div>
 
+
 <style>
-    div.list-view>div{
-        columns: 200px auto;
-        display: inline-block;
-    }
-    div.title-game{
-        width: 195px;
-    }
+
 </style>
+
+
+

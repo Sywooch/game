@@ -66,7 +66,7 @@ class CategoryController extends Controller
         $gameProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => 28,
             ],
         ]);
 

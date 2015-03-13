@@ -69,7 +69,7 @@ class GameSearch extends Game
             ->andFilterWhere(['like', 'img', $this->img]);
 
         $dataProvider->pagination = [
-            'defaultPageSize' => 24,
+            'defaultPageSize' => 28,
             'pageSizeLimit' => [12, 100],
         ];
 
@@ -116,7 +116,7 @@ class GameSearch extends Game
 //            ->andFilterWhere(['like', 'img', $this->img]);
 
         $dataProvider->pagination = [
-            'defaultPageSize' => 12,
+            'defaultPageSize' => 16,
             //'pageSizeLimit' => [12, 100],
         ];
 

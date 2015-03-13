@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "afe80a57e07a1688e2338d0a3ee48a7c",
+    "hash": "b0c5c23f2f2a48a6e161f4f51a8b26be",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -318,53 +318,6 @@
             "time": "2013-11-30 08:25:19"
         },
         {
-            "name": "ijackua/yii2-sharelinks-widget",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/iJackUA/yii2-sharelinks-widget.git",
-                "reference": "1937730d9b2c954e31dc8a1548a95d81ceb54095"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/iJackUA/yii2-sharelinks-widget/zipball/1937730d9b2c954e31dc8a1548a95d81ceb54095",
-                "reference": "1937730d9b2c954e31dc8a1548a95d81ceb54095",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "ijackua\\sharelinks\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Evgeniy Kuzminov",
-                    "email": "kyzminov@gmail.com",
-                    "homepage": "http://stdout.in/",
-                    "role": "Author"
-                }
-            ],
-            "description": "Yii2 widget for popular social networks 'share link' generation",
-            "homepage": "https://github.com/iJackUA/yii2-sharelinks-widget",
-            "keywords": [
-                "extension",
-                "network",
-                "share",
-                "social",
-                "widget",
-                "yii"
-            ],
-            "time": "2014-03-29 16:53:12"
-        },
-        {
             "name": "kartik-v/bootstrap-star-rating",
             "version": "v3.5.1",
             "source": {
@@ -501,6 +454,49 @@
                 "yii2"
             ],
             "time": "2014-11-08 19:30:37"
+        },
+        {
+            "name": "raoul2000/yii2-scrollup-widget",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/raoul2000/yii2-scrollup-widget.git",
+                "reference": "0dedb82ba4a28cec3718f441f6223a89cbb510cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/raoul2000/yii2-scrollup-widget/zipball/0dedb82ba4a28cec3718f441f6223a89cbb510cd",
+                "reference": "0dedb82ba4a28cec3718f441f6223a89cbb510cd",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "raoul2000\\widget\\scrollup\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Raoul",
+                    "email": "raoul.boulard@gmail.com"
+                }
+            ],
+            "description": "Wrapper around the Scrollup JQuery plugin",
+            "keywords": [
+                "extension",
+                "jquery",
+                "plugin",
+                "scroll",
+                "yii2"
+            ],
+            "time": "2014-07-06 15:56:22"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1087,9 +1083,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ijackua/yii2-sharelinks-widget": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

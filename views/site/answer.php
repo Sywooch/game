@@ -13,7 +13,8 @@ echo Collapse::widget([
         // equivalent to the above
         [
             'label' => 'Если вы испытываете какие-либо трудности с отображением или загрузкой игры ?',
-            'content' => 'Вам необходимо обновить версию  ' .Html::a('Adobe Flash Player','http://get.adobe.com/flashplayer/', ['target'=>'_blank']).'  на официальном сайте компании Adobe',
+            'content' => 'Вам необходимо обновить версию  ' .Html::a('Adobe Flash Player','http://get.adobe.com/flashplayer/', ['target'=>'_blank']).'
+            на официальном сайте компании Adobe. <br>Также можем вам посоветовать  '.Html::a('Скачать плагин Unity3D', '/file/Unity3d.rar', ['class' => 'btn btn-primary  flash-buttons','alt'=>'Скачать плагин Unity3D', 'target'=>'_blank',]),
             // open its content by default
             'contentOptions' => ['class' => 'in']
         ],
@@ -30,6 +31,14 @@ echo Collapse::widget([
             //'contentOptions' => [...],
             //'options' => [...],
         ],
+        [
+            'label' => 'Хотите хранить список любимых игр без регистрации ?',
+            'content' => 'На странице каждой игры есть кнопочка "К моим играм", нажав на неё вы добавите выбранную игру к вашему списку игр.
+            Список добавленных вами игр будет отображаться в вверхнем меню сайта.',
+            //'contentOptions' => [...],
+            //'options' => [...],
+        ],
+
 
     ]
 ]);

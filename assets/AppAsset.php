@@ -19,8 +19,10 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/social-likes_classic.css'
     ];
     public $js = [
+        'js/social-likes.min.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

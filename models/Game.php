@@ -44,7 +44,7 @@ class Game extends \yii\db\ActiveRecord
     {
         return [
             [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'alias'], 'required'],
-            [['category_id'], 'integer'],
+            [['category_id','counter'], 'integer'],
             [['title', 'file', 'img','pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 6255],
             // normalize "alias" input
@@ -66,6 +66,7 @@ class Game extends \yii\db\ActiveRecord
             'title' => 'Заголовок',
             'file' => 'Файл',
             'img' => 'Изображение',
+            'counter'=>'Количество просмотров',
         ];
     }
 

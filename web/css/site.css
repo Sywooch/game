@@ -3,8 +3,71 @@ body {
     height: 100%;
 }
 
+div.list-view>div{
+    columns: 200px auto;
+    display: inline-block;
+    vertical-align: top;
+}
+div.title-game{
+    width: 195px;
+}
 
+div.game-flash-file{
+    width: 900px;
+}
 
+div.game-flash-buttons{
+    float: right;
+    width: 120px;
+    /*padding-left: -80px;*/
+    height: 250px;
+    /*border: 1px solid red;*/
+    margin-top: 50px;
+}
+a.flash-buttons{
+    width: 181px;
+    margin-bottom: 30px;
+}
+
+#scrollup {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #555;
+    color: #fff;
+}
+div.list-view>div{
+    columns: 200px auto;
+    display: inline-block;
+}
+div.title-game{
+    width: 195px;
+}
+div.list-view>div{
+    columns: 200px auto;
+    display: inline-block;
+}
+div.title-game{
+    width: 195px;
+}
+
+#scrollup {
+    bottom: 20px;
+    right: 20px;
+    background: #555;
+    color: #fff;
+    font-size: 12px;
+    font-family: sans-serif;
+    text-decoration: none;
+    opacity: .9;
+    padding: 10px 20px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+    -webkit-transition: background 200ms linear;
+    -moz-transition: background 200ms linear;
+    transition: background 200ms linear;
+}
 .wrap {
     min-height: 100%;
     height: auto;

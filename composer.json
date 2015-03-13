@@ -19,7 +19,7 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "kartik-v/yii2-widget-rating": "*",
-        "ijackua/yii2-sharelinks-widget": "dev-master"
+        "raoul2000/yii2-scrollup-widget": "*"
 
     },
     "require-dev": {

@@ -58,11 +58,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </div>
 <style>
-    div.list-view>div{
-        columns: 200px auto;
-        display: inline-block;
-    }
-    div.title-game{
-        width: 195px;
-    }
+
 </style>

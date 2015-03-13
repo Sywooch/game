@@ -154,6 +154,9 @@ class GameController extends Controller
 
         $similar = $searchModel->similarSearch($model->category_id, $model->id);
 
+        //add +1 to counter of game
+        $model->updateCounters(['counter'=>1]);
+
         return $this->render('view', [
             'model' => $model,
             'similarDataProvider'=>$similar,
