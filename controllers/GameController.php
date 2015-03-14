@@ -42,6 +42,7 @@ class GameController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'favorite'  => ['post'],
+                    'deletefavoritegame'=>['post'],
                     'view'   => ['get'],
                     'create' => ['get', 'post'],
                     'update' => ['get', 'put', 'post'],
@@ -150,9 +151,6 @@ class GameController extends Controller
             ]));
         }
 
-//        $cookies = Yii::$app->response->cookies;
-//        $cookies->remove('favorite_games');
-//        unset($cookies['favorite_games']);
     }
 
     /*
@@ -168,32 +166,47 @@ class GameController extends Controller
             $query = new Query();
 
             $dataProvider = new ArrayDataProvider([
-                'allModels' => (new Query())->select('*')->from('tbl_game')->where(['id'=>$favorite_games_ids])->all(),
+                'allModels' => (new Query())->select(['id','img','alias','title'])->from('tbl_game')->where(['id'=>$favorite_games_ids])->all(),
                 'pagination' => [
                     'pageSize' => 24,
                 ],
             ]);
-            // get the games in the current page
-            //$games = $provider->getModels();
-
-
-            //$countQuery = (new Query())->select('COUNT(*)')->from('tbl_game')->where(['id'=>$favorite_games_ids])->scalar();
-
-            //$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM tbl_game WHERE id IN (:ids)', [':ids' => $favorite_games_ids])->queryScalar();
-
-//            $dataProvider = new SqlDataProvider([
-//                'sql' => 'SELECT * FROM tbl_game WHERE id IN (:ids)',
-//                'params' => [':ids' => $favorite_games_ids],
-//                'totalCount' => $countQuery,
-//                'pagination' => [
-//                    'pageSize' => 20,
-//                ],
-//            ]);
-
-            //display favorite games of user, data gived from cookies
-            return $this->render('my_favorite', ['dataProvider'=>$dataProvider]);
+        }else{
+            $dataProvider = new ArrayDataProvider();
         }
 
+        //display favorite games of user, data gived from cookies
+        return $this->render('my_favorite', ['dataProvider'=>$dataProvider]);
+
+    }
+
+    /*
+     * user can delete selected games from favorite list
+     */
+    public function actionDeletefavoritegame($id){
+        //read favorite-list of games user and delete from list $id element
+        if (isset(\Yii::$app->request->cookies['favorite_games'])) {
+
+            //get favorite list from cookies
+            $favorite_games = json_decode(\Yii::$app->request->cookies['favorite_games']->value, true);
+
+            //delete cheked element from array
+            if(($key = array_search($id, $favorite_games)) !== false) {
+                unset($favorite_games[$key]);
+                //rewrite cookies
+                \Yii::$app->response->cookies->add(new \yii\web\Cookie([
+                    'name' => 'favorite_games',
+                    'value' => json_encode($favorite_games),
+                    'expire' => time() + 86400 * 365
+                ]));
+            }
+            //if size of list is null - delete cookie
+            if(sizeof($favorite_games)==0){
+                $cookies = Yii::$app->response->cookies;
+                $cookies->remove('favorite_games');
+                unset($cookies['favorite_games']);
+            }
+        }
     }
 
     /*

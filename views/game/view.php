@@ -62,7 +62,7 @@ $this->registerMetaTag([
                                 cache    : false,
                                 url  : '".Url::to(['/game/addfavorite','id'=>$model->id])."',
                                 success  : function(response) {
-                                    alert('done');
+                                    location.reload();
                                 }
                         });return false;",
                     ]);
@@ -85,45 +85,12 @@ $this->registerMetaTag([
                         'model_name' => 'Game', // name of current model
                         'target_id' => $model->id, // id of current element
                         // optional fields
-                        'view_aggregate_rating' => false, // set true to show aggregate_rating
-                        'mainDivOptions' => ['class' => 'text-center'], // div options
+                        'view_aggregate_rating' => true, // set true to show aggregate_rating
+                        'mainDivOptions' => ['class' => 'text-center','style'=>'font-size:30px'], // div options
                         'classLike' => 'glyphicon glyphicon-thumbs-up', // class for like button
                         'classDislike' => 'glyphicon glyphicon-thumbs-down', // class for dislike button
                         'separator' => '&nbsp;', // separator between like and dislike button
                     ]);
-
-
-//                    echo Kudos::widget(
-//                        [
-//                            'widgetId' => 'game', // unique id of widget on page, to allow more than one widget on the page
-//                            'uid' => $model->id, // uid of Kudoable element, for stat count
-//                            'count' => $model->rating, // initial Kudos value, to display
-//                            'onAdded' => 'function (event) {
-//  // JS callback on Kudo +1 , you can do what ever you want here
-//  // for example send AJAX request to track stats
-//  var uid = $(this).data("uid");
-//  $.post("/kudo/plus/post/" + uid);}',
-//                            'onRemoved' => 'function (event) {
-//  // JS callback on Kudo -1, send another AJAX request to track stats
-//  var uid = $(this).data("uid");
-//  $.post("/kudo/minus/post/" + uid);}',
-//                        ]);
-
-//                    echo  Kudos::widget(
-//                        [
-//                            'widgetId' => 'post',
-//                            'uid' => $model->id,
-//                            'count' => $model->rating,
-//                            'defaultClass' => 'glyphicon glyphicon-hand-right',
-//                            'onAdded' => 'function (event) {
-//        var uid = $(this).data("uid");
-//        $(this).find(".icon").removeClass("icon-emo-thumbsup").addClass("icon-emo-beer");
-//        $.post("/kudo/plus/post/" + uid);}',
-//                            'onRemoved' => 'function (event) {
-//        var uid = $(this).data("uid");
-//        $(this).find(".icon").removeClass("icon-emo-beer").addClass("icon-emo-thumbsup");
-//        $.post("/kudo/minus/post/" + uid);}',
-//                        ]);
                     ?>
                 </div>
             </div>
@@ -142,9 +109,8 @@ $this->registerMetaTag([
 
 
     <div class="game-desc">
-        <pre><?=$model->description;?></pre>
+        <span class="game-desc-pre"><?=$model->description;?></span>
     </div>
-
 
     <h3>Похожие игры</h3>
     <div class="game-index">
