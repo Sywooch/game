@@ -15,6 +15,20 @@ $config = [
     //when update site
     //'catchAll' => ['site/offline'],
 
+    'modules' => [
+        'vote' => [
+            'class' => 'chiliec\vote\Module',
+            'allow_guests' => true, // if true will check IP, otherwise - UserID
+            'allow_change_vote' => true, // if true vote can be changed
+            'matchingModels' => [ // matching model names with whatever unique integer ID
+                'Game' => 1, // may be just integer value
+//                'audio' => ['id'=>1], // or array with 'id' key
+//                'video' => ['id'=>2, 'allow_guests'=>false], // own value 'allow_guests'
+//                'photo' => ['id'=>3, 'allow_guests'=>false, 'allow_change_vote'=>false],
+            ],
+        ],
+    ],
+
     'components' => [
 
         'urlManager' => [
@@ -26,47 +40,23 @@ $config = [
                 ''=>'game/index',
                 'answer'=>'site/answer',
                 'contact'=>'site/contact',
-
-                //'<controller:\w+>' => '<controller>/index',
+                'search'=>'site/search',
 
                 '<controller:\w+>/page/<page:\d+>' => '<controller>/index',
 
-
-
-                //'game/<id:\d+>' => 'game/view',
-                //'game/<alias:\w+>' => 'game/view',
-                //'<controller:\w+>/<slug:\w+>'=>'game/view',
-                //'suffix' => '.html',
-                //'category/index' => 'category/index',
+                'game/myfavorite' => 'game/myfavorite',
                 'game/<alias>' => 'game/view',
-                //'game/<alias>' => 'game/view',
-
                 'categorys' => 'category/index',
-                //'post/<id:\d+>' => 'post/view',
-
                 'category/<alias>' => 'category/view',
-                //'category/<alias>' => 'category/view',
-
-
-
                 'site/captcha'=>'site/captcha',
 
-
 //
-//                '<controller:\w+>/<id:\d+>' => '<controller>/view',
-//                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-//                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 
                 //'<controller:\w+>/<alias:\w+>' => '<controller>/view',
                 //'<controller:\w+>/<id:\w+>' => '<controller>/view',
-
-
-
-//                [
-//                    'pattern' => 'games',
-//                    'route' => 'game/index',
-//                    //'suffix' => '.json',
-//                ],
 
             ],
         ],

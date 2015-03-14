@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use yii\helpers\Html;
+
 class User extends \yii\base\Object implements \yii\web\IdentityInterface
 {
     public $id;
@@ -99,5 +101,26 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    /*
+     * user can add game to favorite-list
+     * favorite-list saved in user-cookies
+     * if isset data in favorite-list we show link to controller where we show his favorite-games
+     * "favorite_games" - json-string
+     * format - ['label' => 'Вопрос/Ответ', 'url' => ['/site/answer']],
+     */
+    public static function getFavoriteGameCount(){
+
+        $cookies = \Yii::$app->request->cookies;
+
+        if (isset($cookies['favorite_games'])) {
+
+            $favorite_games = json_decode($cookies['favorite_games']->value, true);
+
+            return ['label'=>Html::decode('Избранные игры ('.sizeof($favorite_games).')'), 'url'=>['/game/myfavorite/']];
+        }else{
+            return '';
+        }
     }
 }

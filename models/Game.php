@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\SluggableBehavior;
+use yii\data\ActiveDataProvider;
 
 /**
  * This is the model class for table "{{%game}}".
@@ -26,32 +27,22 @@ class Game extends \yii\db\ActiveRecord
         return '{{%game}}';
     }
 
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'title',
-                'slugAttribute' => 'alias',
-            ],
-        ];
-    }
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'alias'], 'required'],
+            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules'], 'required'],
             [['category_id','counter'], 'integer'],
             [['title', 'file', 'img','pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
-            [['description'], 'string', 'max' => 6255],
+            [['description', 'rules'], 'string', 'max' => 6255],
             // normalize "alias" input
             ['alias', 'filter', 'filter' => function ($value) {
                     // normalize alias input here
-                    return self::str2url($value);
+                    return self::str2url($this->title);
                 }],
+            [['alias','title'], 'unique'],
         ];
     }
 
@@ -67,6 +58,16 @@ class Game extends \yii\db\ActiveRecord
             'file' => 'Файл',
             'img' => 'Изображение',
             'counter'=>'Количество просмотров',
+            'rules'=>'Как играть',
+        ];
+    }
+
+    public function behaviors() {
+        return [
+            [
+                'class' => \chiliec\vote\behaviors\RatingBehavior::className(),
+                'model_name' => 'Game', // name of this model
+            ],
         ];
     }
 
@@ -122,14 +123,13 @@ class Game extends \yii\db\ActiveRecord
      * find similar games for current game in current category of game
      */
     public function similarGames($limit = 9){
-        //$searchModel = new GameSearch();
-        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $queryGame = \app\models\Game::find();
+
         $gameProvider = new ActiveDataProvider([
             'query' => $queryGame,
             'pagination' => [
-                'pageSize' => 200,
+                'pageSize' => 24,
             ],
         ]);
     }

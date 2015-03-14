@@ -23,6 +23,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/social-likes.min.js',
+        //'js/main.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

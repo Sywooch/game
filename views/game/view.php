@@ -3,25 +3,15 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
-use kartik\rating\StarRating;
 use yii\web\View;
+use kartik\popover\PopoverX;
+use ijackua\kudos\Kudos;
 /* @var $this yii\web\View */
 /* @var $model app\models\Game */
 
 $this->title = $model->title;
 
 $this->registerJsFile('http://userapi.com/js/api/openapi.js?116',['depends' => [\yii\web\JqueryAsset::className()]]);
-
-
-
-// Просто подключаем один файл:
-
-//$this->registerCssFile('@app/assets/css/style.css');
-//
-//// Фрагмент:
-//$this->registerJs('alert("message");', self::POS_READY, 'myKey');
-//$this->registerCss('.class{color: red;}');
-
 
 $this->registerMetaTag([
     'name' => 'keywords',
@@ -32,45 +22,15 @@ $this->registerMetaTag([
     'content'=>$model->description_meta,
 ]);
 
-//'description' => $model->description_meta
-
-//$this->params['breadcrumbs'][] = ['label' => 'Игры', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->category->title, 'url' => Url::to(['/category/view','alias'=>$model->category->alias])];
-$this->params['breadcrumbs'][] = $this->title;
+    //$this->params['breadcrumbs'][] = ['label' => 'Игры', 'url' => ['index']];
+    $this->params['breadcrumbs'][] = ['label' => $model->category->title, 'url' => Url::to(['/category/view','alias'=>$model->category->alias])];
+    $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-
-
 
 
 <div class="game-view" >
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-
-    <div class="game-desc">
-        <?=$model->description;?>
-    </div>
-
-    <?php
-
-
-
-
-//    echo '<label class="control-label">Rating</label>';
-//    echo StarRating::widget(['model' => $model, 'attribute' => 'rating',
-//        'pluginOptions' => [
-//            'glyphicon' => false
-//        ]
-//    ]);
-
-
-    // Usage with ActiveForm and model
-//    echo $form->field($model, 'rating')->widget(StarRating::classname(), [
-//        'pluginOptions' => ['size'=>'lg']
-//    ]);
-
-    ?>
 
     <div class="game-flash">
         <div class="game-flash-file">
@@ -86,45 +46,90 @@ $this->params['breadcrumbs'][] = $this->title;
             </object>
             <div class="game-flash-buttons">
                 <div id="fullscreen">
-<!--                    <a href="#" onclick="ResizeFlash(546, 728); return false" rel="nofollow">Во весь экран</a>,'style'=>'width:181px;'  -->
-                    <?=Html::a('Во весь экран', '#', ['class' => 'btn btn-primary flash-buttons','rel'=>'nofollow']);?>
+
+                    <?=Html::a('Во весь экран',  [Url::to(['/game/fullscreen','id'=>$model->id])], ['class' => 'btn btn-primary flash-buttons', 'target'=>'_blank']);?>
 
                     <?=Html::a('Скачать плагин Unity3D', '/file/Unity3d.rar', ['class' => 'btn btn-primary  flash-buttons','alt'=>'Скачать плагин Unity3D', 'target'=>'_blank',]);?>
 
                     <?=Html::a('Не работает ?', ['/answer/'], ['class' => 'btn btn-primary  flash-buttons','target'=>'_blank','alt'=>'Не работает ?']);?>
 
+                    <?php
+                    echo Html::a('К моим играм','#', [
+                        'class' => 'btn btn-primary  flash-buttons',
+                        'onclick'=>"
+                             $.ajax({
+                                type     :'POST',
+                                cache    : false,
+                                url  : '".Url::to(['/game/addfavorite','id'=>$model->id])."',
+                                success  : function(response) {
+                                    alert('done');
+                                }
+                        });return false;",
+                    ]);
 
-                    <?=Html::a('К моим играм', '#', ['class' => 'btn btn-primary  flash-buttons','alt'=>'Добавить в избранное']);?>
+                    ?>
 
 
+                    <?php
+                        // info
+                        echo PopoverX::widget([
+                            'header' => 'Управление игры  ',
+                            'type' => PopoverX::TYPE_INFO,
+                            'placement' => PopoverX::ALIGN_BOTTOM,
+                            'content' => $model->rules,
+                            'toggleButton' => ['label'=>'Как играть ?', 'class'=>'btn btn-primary  flash-buttons'],
+                        ]);
+
+
+                    echo \chiliec\vote\Display::widget([
+                        'model_name' => 'Game', // name of current model
+                        'target_id' => $model->id, // id of current element
+                        // optional fields
+                        'view_aggregate_rating' => false, // set true to show aggregate_rating
+                        'mainDivOptions' => ['class' => 'text-center'], // div options
+                        'classLike' => 'glyphicon glyphicon-thumbs-up', // class for like button
+                        'classDislike' => 'glyphicon glyphicon-thumbs-down', // class for dislike button
+                        'separator' => '&nbsp;', // separator between like and dislike button
+                    ]);
+
+
+//                    echo Kudos::widget(
+//                        [
+//                            'widgetId' => 'game', // unique id of widget on page, to allow more than one widget on the page
+//                            'uid' => $model->id, // uid of Kudoable element, for stat count
+//                            'count' => $model->rating, // initial Kudos value, to display
+//                            'onAdded' => 'function (event) {
+//  // JS callback on Kudo +1 , you can do what ever you want here
+//  // for example send AJAX request to track stats
+//  var uid = $(this).data("uid");
+//  $.post("/kudo/plus/post/" + uid);}',
+//                            'onRemoved' => 'function (event) {
+//  // JS callback on Kudo -1, send another AJAX request to track stats
+//  var uid = $(this).data("uid");
+//  $.post("/kudo/minus/post/" + uid);}',
+//                        ]);
+
+//                    echo  Kudos::widget(
+//                        [
+//                            'widgetId' => 'post',
+//                            'uid' => $model->id,
+//                            'count' => $model->rating,
+//                            'defaultClass' => 'glyphicon glyphicon-hand-right',
+//                            'onAdded' => 'function (event) {
+//        var uid = $(this).data("uid");
+//        $(this).find(".icon").removeClass("icon-emo-thumbsup").addClass("icon-emo-beer");
+//        $.post("/kudo/plus/post/" + uid);}',
+//                            'onRemoved' => 'function (event) {
+//        var uid = $(this).data("uid");
+//        $(this).find(".icon").removeClass("icon-emo-beer").addClass("icon-emo-thumbsup");
+//        $.post("/kudo/minus/post/" + uid);}',
+//                        ]);
+                    ?>
                 </div>
             </div>
 
         </div>
     </div>
-
-
-    <p>
-        <?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?php /*echo Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) */?>
-
-    </p>
-<?php
-/*    echo StarRating::widget([
-    'name' => 'rating',
-    'pluginOptions' => ['size' => 'lg','disabled'=>true,]
-    ]);
-*/
-?>
-
-
-
 
     <div class="social-likes" data-counters="no">
         <div class="facebook" title="Поделиться ссылкой на Фейсбуке">Facebook</div>
@@ -136,24 +141,23 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 
-    <h4>Похожие игры</h4>
+    <div class="game-desc">
+        <pre><?=$model->description;?></pre>
+    </div>
+
+
+    <h3>Похожие игры</h3>
     <div class="game-index">
         <?php
             echo ListView::widget([
                 'dataProvider' => $similarDataProvider,
                 'itemView' => '_similar_game',
-                //'summary'=>'',
-                //'layout' => '{summary}\n{items}\n{pager}',
                 'layout' => '{items}',
             ]);
         ?>
     </div>
 
-
-
-    <!-- блок комментариев  https://vk.com/dev/Comments -->
-
-    <!-- Put this div tag to the place, where the Comments block will be -->
+    <!-- comments from vk-->
     <div id="vk_comments"></div>
 
     <?php
@@ -161,18 +165,4 @@ $this->params['breadcrumbs'][] = $this->title;
         $this->registerJs('VK.Widgets.Comments("vk_comments", {limit: 10, width: "665", attach: "*"});',View::POS_END, 'myKey1');
     ?>
 
-    <script type="text/javascript">
-
-
-
-    </script>
-
 </div>
-
-
-<style>
-
-</style>
-
-
-

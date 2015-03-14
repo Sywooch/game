@@ -1,25 +1,29 @@
 <?php
-use yii\helpers\Html;
+/**
+ * Created by PhpStorm.
+ * User: user
+ * Date: 14.03.15
+ * Time: 16:25
+ */
 use yii\widgets\ListView;
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\GameSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Games';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = 'Избранные игры';
 
 
 $this->registerMetaTag([
     'name' => 'description',
     'content' => 'some description'
 ]);
-
 ?>
+
+<h2>Избранные игры</h2>
+
 <div class="game-index">
     <?php
     echo ListView::widget([
         'dataProvider' => $dataProvider,
-        'itemView' => '_game',
+        'itemView' => '_game_array',
         'pager'        => [
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',

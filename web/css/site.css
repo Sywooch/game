@@ -22,11 +22,26 @@ div.game-flash-buttons{
     /*padding-left: -80px;*/
     height: 250px;
     /*border: 1px solid red;*/
-    margin-top: 50px;
+    margin-top: 0px;
 }
-a.flash-buttons{
+a.flash-buttons, button.flash-buttons{
     width: 181px;
     margin-bottom: 30px;
+}
+
+div.game-desc{
+    width: 950px;
+    margin-top: 10px;
+}
+
+#full-screen-content{
+    width: 90%;
+    height: 90%;
+}
+
+div.input-group{
+    width: 300px;
+    /*border: 1px solid red;*/
 }
 
 #scrollup {

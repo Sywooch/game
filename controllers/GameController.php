@@ -6,6 +6,9 @@ use app\models\CategorySearch;
 use Yii;
 use app\models\Game;
 use app\models\GameSearch;
+use yii\data\ArrayDataProvider;
+use yii\data\SqlDataProvider;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -34,10 +37,15 @@ class GameController extends Controller
     public function behaviors()
     {
         return [
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'favorite'  => ['post'],
+                    'view'   => ['get'],
+                    'create' => ['get', 'post'],
+                    'update' => ['get', 'put', 'post'],
+                    'delete' => ['post', 'delete'],
                 ],
             ],
 //            [
@@ -78,64 +86,14 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
-
-//        $games = Yii::$app->db->createCommand('SELECT id, title FROM tbl_game')->queryAll();
-//
-//        if($games){
-//            foreach($games as $game){
-//
-//                $alias = Game::str2url($game['title']);
-//
-//                $params = [':id'=>$game['id'], ':alias'=>$alias];
-//
-//                Yii::$app->db->createCommand('UPDATE tbl_game SET alias=:alias WHERE id=:id')->bindValues($params)->execute();
-//            }
-//        }
-
-
         $searchModel = new GameSearch();
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-
-    /*
-     * main page of site
-     */
-    public function actionMain(){
-
-//        $parser = new \app\models\Parser();
-//        $parser->parseGameCategory();
-
-//        //show all category list
-//        $queryCategory = \app\models\Category::find();
-//        $categoryProvider = new ActiveDataProvider([
-//            'query' => $queryCategory,
-//            'pagination' => [
-//                'pageSize' => 20,
-//            ],
-//        ]);
-//
-//        //show all game list
-//        $queryGame = \app\models\Game::find();
-//        $gameProvider = new ActiveDataProvider([
-//            'query' => $queryGame,
-//            'pagination' => [
-//                'pageSize' => 200,
-//            ],
-//        ]);
-//
-//
-//        return $this->render('main', [
-//            'categoryProvider' => $categoryProvider,
-//            'gameProvider'=>$gameProvider,
-//        ]);
-
-
-
     }
 
     /**
@@ -150,16 +108,103 @@ class GameController extends Controller
 
         //find others games from this category(similar-games)
         $searchModel = new GameSearch();
-        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $similar = $searchModel->similarSearch($model->category_id, $model->id);
 
         //add +1 to counter of game
-        $model->updateCounters(['counter'=>1]);
+        //$model->updateCounters(['counter'=>1]);
 
         return $this->render('view', [
             'model' => $model,
             'similarDataProvider'=>$similar,
+        ]);
+    }
+
+    /*
+     * when user add game to favorite he send request in this action
+     */
+    public function actionAddfavorite($id){
+
+        $cookies = \Yii::$app->response->cookies;
+
+        if (isset(\Yii::$app->request->cookies['favorite_games'])) {
+
+            $favorite_games = json_decode(\Yii::$app->request->cookies['favorite_games']->value, true);
+
+            if(!in_array($id, $favorite_games)){
+                $favorite_games[] = $id;
+            }
+
+            // add a new cookie to the response to be sent
+            $cookies->add(new \yii\web\Cookie([
+                'name' => 'favorite_games',
+                'value' => json_encode($favorite_games),
+                'expire' => time() + 86400 * 365
+            ]));
+        }else{
+            // add a new cookie to the response to be sent
+            $cookies->add(new \yii\web\Cookie([
+                'name' => 'favorite_games',
+                'value' => json_encode([$id]),
+                'expire' => time() + 86400 * 365
+            ]));
+        }
+
+//        $cookies = Yii::$app->response->cookies;
+//        $cookies->remove('favorite_games');
+//        unset($cookies['favorite_games']);
+    }
+
+    /*
+     * show favorite games which user add to favorite list
+     * $data = [1,2,3,4,5] - list of ID-games
+     */
+    public function actionMyfavorite(){
+
+        if (isset(\Yii::$app->request->cookies['favorite_games'])) {
+
+            $favorite_games_ids = json_decode(\Yii::$app->request->cookies['favorite_games']->value, true);
+
+            $query = new Query();
+
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => (new Query())->select('*')->from('tbl_game')->where(['id'=>$favorite_games_ids])->all(),
+                'pagination' => [
+                    'pageSize' => 24,
+                ],
+            ]);
+            // get the games in the current page
+            //$games = $provider->getModels();
+
+
+            //$countQuery = (new Query())->select('COUNT(*)')->from('tbl_game')->where(['id'=>$favorite_games_ids])->scalar();
+
+            //$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM tbl_game WHERE id IN (:ids)', [':ids' => $favorite_games_ids])->queryScalar();
+
+//            $dataProvider = new SqlDataProvider([
+//                'sql' => 'SELECT * FROM tbl_game WHERE id IN (:ids)',
+//                'params' => [':ids' => $favorite_games_ids],
+//                'totalCount' => $countQuery,
+//                'pagination' => [
+//                    'pageSize' => 20,
+//                ],
+//            ]);
+
+            //display favorite games of user, data gived from cookies
+            return $this->render('my_favorite', ['dataProvider'=>$dataProvider]);
+        }
+
+    }
+
+    /*
+     * full screen view game
+     */
+    public function actionFullscreen($id){
+
+        $model = $this->findModelId($id);
+
+        return $this->renderPartial('fullscreen', [
+            'model' => $model,
         ]);
     }
 
@@ -189,7 +234,7 @@ class GameController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModelId($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -208,7 +253,7 @@ class GameController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModelId($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -228,4 +273,14 @@ class GameController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    protected function findModelId($id)
+    {
+        if (($model = Game::findOne(['id'=>$id])) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
 }
