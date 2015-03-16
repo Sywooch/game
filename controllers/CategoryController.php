@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Game;
 use Yii;
 use app\models\Category;
 use app\models\CategorySearch;
@@ -17,6 +18,9 @@ use yii\data\ActiveDataProvider;
  */
 class CategoryController extends Controller
 {
+
+    public $defaultAction = 'index';
+
     public function behaviors()
     {
         return [
@@ -51,15 +55,18 @@ class CategoryController extends Controller
      */
     public function actionView($alias)
     {
-
-
         $category = $this->findModel($alias);
-
 
         $query = new Query();
         $query->select(['img','title','alias']);
         $query->from('tbl_game');
         $query->where(['category_id'=>$category->id]);
+
+        //for guest we show only published pages
+        if(Yii::$app->user->isGuest){
+            $query->andWhere(['rules'=>Game::STATUS_PUBLISHED]);
+        }
+
 
         //show all game list
         //$queryGame = \app\models\Game::find(['category_id'=>$category->id]);

@@ -27,6 +27,12 @@ $config = [
 //                'photo' => ['id'=>3, 'allow_guests'=>false, 'allow_change_vote'=>false],
             ],
         ],
+
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+            //'defaultaction'=>'index',
+            'defaultRoute' => 'gameadmin',
+        ],
     ],
 
     'components' => [
@@ -41,6 +47,7 @@ $config = [
                 'answer'=>'site/answer',
                 'contact'=>'site/contact',
                 'search'=>'site/search',
+                'login'=>'site/login',
 
                 '<controller:\w+>/page/<page:\d+>' => '<controller>/index',
 
@@ -56,7 +63,8 @@ $config = [
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 
                 '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
-                //'<module:\w+><controller:\w+>/<action:update|delete>/<id:\d+>' => '<module>/<controller>/<action>',
+                '<module:\w+>/<controller:\w+>/'=>'<module>/<controller>/index',
+                //'<module:admin><controller:\w+>/<action:update|delete>/<id:\d+>' => 'admin/<controller>/<action>',
 
 
                 //'<controller:\w+>/<alias:\w+>' => '<controller>/view',

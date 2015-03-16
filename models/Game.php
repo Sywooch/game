@@ -3,8 +3,10 @@
 namespace app\models;
 
 use Yii;
-use yii\behaviors\SluggableBehavior;
+//use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%game}}".
@@ -19,6 +21,10 @@ use yii\data\ActiveDataProvider;
  */
 class Game extends \yii\db\ActiveRecord
 {
+
+    const STATUS_PUBLISHED = 1;
+    const STATUS_DRAFT = 0;
+
     /**
      * @inheritdoc
      */
@@ -27,14 +33,67 @@ class Game extends \yii\db\ActiveRecord
         return '{{%game}}';
     }
 
+    public function behaviors()
+    {
+        return [
+//            [
+//                'class' => TimestampBehavior::className(),
+//                'createdAtAttribute' => 'created_at',
+//                'updatedAtAttribute' => 'updated_at',
+//                'value' => time(),
+//            ],
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'created_at',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+            ],
+            [
+                'class' => \chiliec\vote\behaviors\RatingBehavior::className(),
+                'model_name' => 'Game', // name of this model
+            ],
+        ];
+    }
+
+    /**
+     * @return string status
+     */
+    public function getStatus()
+    {
+        $statuses = self::getStatuses();
+        return $statuses[$this->publish_status];
+    }
+
+
+    /**
+     * @return int last changes timestamp
+     */
+    public function getLastChangesTimestamp()
+    {
+        return !empty($this->updated_at) ? $this->updated_at : $this->created_at;
+    }
+
+    /**
+     * @return array statuses
+     */
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_DRAFT => 'Черновик',
+            self::STATUS_PUBLISHED => 'Опубликовано',
+        ];
+    }
+
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules'], 'required'],
-            [['category_id','counter'], 'integer'],
+            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules', 'updated_at', 'created_at','publish_status','description_meta'], 'required'],
+            [['category_id','counter', 'updated_at', 'created_at','publish_status'], 'integer'],
             [['title', 'file', 'img','pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
             [['description', 'rules'], 'string', 'max' => 6255],
             // normalize "alias" input
@@ -59,15 +118,13 @@ class Game extends \yii\db\ActiveRecord
             'img' => 'Изображение',
             'counter'=>'Количество просмотров',
             'rules'=>'Как играть',
-        ];
-    }
-
-    public function behaviors() {
-        return [
-            [
-                'class' => \chiliec\vote\behaviors\RatingBehavior::className(),
-                'model_name' => 'Game', // name of this model
-            ],
+            'created_at'=>'Дата создания',
+            'updated_at'=>'Дата обновления',
+            'status'=>'Статус',
+            'publish_status'=>'Статус публикации',
+            'keywords'=>'Ключевые слова',
+            'description'=>'Описание',
+            'description_meta'=>'Мета-описание',
         ];
     }
 
@@ -124,13 +181,13 @@ class Game extends \yii\db\ActiveRecord
      */
     public function similarGames($limit = 9){
 
-        $queryGame = \app\models\Game::find();
-
-        $gameProvider = new ActiveDataProvider([
-            'query' => $queryGame,
-            'pagination' => [
-                'pageSize' => 24,
-            ],
-        ]);
+//        $queryGame = \app\models\Game::find();
+//
+//        $gameProvider = new ActiveDataProvider([
+//            'query' => $queryGame,
+//            'pagination' => [
+//                'pageSize' => 24,
+//            ],
+//        ]);
     }
 }

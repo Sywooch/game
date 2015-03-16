@@ -18,7 +18,7 @@ use yii\helpers\Url;
     <?php
         echo Html::a('','#', [
             'class' => 'glyphicon glyphicon-remove-circle',
-            'style'=>'margin-left:-40px; font-size:20px',
+            'style'=>'left:-40px; font-size:22px; color:white',
             'title'=>'Удалить из избранного',
             'onclick'=>"
                                  $.ajax({

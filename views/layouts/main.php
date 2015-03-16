@@ -47,32 +47,35 @@ AppAsset::register($this);
 
 <?php
 
-//<a href="#">Inbox <span class="badge">42</span></a>
+            if(Yii::$app->user->isGuest){
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav navbar-right'],
+                    'items' => [
+                        \app\models\User::getFavoriteGameCount(),
+                        [
+                            'label' => 'Разделы',
+                            'items' =>
+                                \app\models\Category::dropDownMenu(),
+                        ],
 
-            //echo \app\models\User::getFavoriteGameCount();
-
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => [
-
-                    \app\models\User::getFavoriteGameCount(),
-
-                    //['label' => 'Home', 'url' => ['/site/index']],
-                    [
-                        'label' => 'Разделы',
-                        'items' =>
-                            \app\models\Category::dropDownMenu(),
+                        ['label' => 'Вопрос/Ответ', 'url' => ['/site/answer']],
+                        ['label' => 'Обратная связь', 'url' => ['/site/contact']],
                     ],
+                ]);
+            }
 
-                    ['label' => 'Вопрос/Ответ', 'url' => ['/site/answer']],
-                    ['label' => 'Обратная связь', 'url' => ['/site/contact']],
-//                    Yii::$app->user->isGuest ?
-//                        ['label' => 'Login', 'url' => ['/site/login']] :
-//                        ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-//                            'url' => ['/site/logout'],
-//                            'linkOptions' => ['data-method' => 'post']],
-                ],
-            ]);
+            //if login user
+            if(!Yii::$app->user->isGuest){
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav navbar-right'],
+                    'items' => [
+                        ['label' => 'Игры', 'url' => ['/admin/gameadmin']],
+                        ['label' => 'Категории', 'url' => ['/admin/categorygame']],
+                        ['label' => 'Выход','url' => ['/site/logout'],'linkOptions' => ['data-method' => 'post']],
+                    ],
+                ]);
+            }
+
             NavBar::end();
         ?>
 
@@ -82,7 +85,7 @@ AppAsset::register($this);
             'pluginOptions' => [
                 'scrollText' => "Наверх", // Text for element
                 'scrollName'=> 'scrollup', // Element ID
-                'topDistance'=> 400, // Distance from top before showing element (px)
+                'topDistance'=> 300, // Distance from top before showing element (px)
                 'topSpeed'=> 3000, // Speed back to top (ms)
                 'animation' => Scrollup::ANIMATION_SLIDE, // Fade, slide, none
                 'animationInSpeed' => 200, // Animation in speed (ms)

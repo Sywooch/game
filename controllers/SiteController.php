@@ -60,6 +60,7 @@ class SiteController extends Controller
     {
         return $this->render('search');
     }
+
     public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {
@@ -68,7 +69,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->goBack('/admin/gameadmin/index');
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -108,4 +109,9 @@ class SiteController extends Controller
     public function actionAnswer(){
         return $this->render('answer');
     }
+
+    public function actionError(){
+        $this->render('error');
+    }
+
 }

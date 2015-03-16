@@ -16,6 +16,11 @@ div.game-flash-file{
     width: 900px;
 }
 
+div.category-row{
+    columns: 200px auto;
+    display: inline-block;
+    vertical-align: top;
+}
 
 
 div.game-flash-buttons{
@@ -174,7 +179,7 @@ a.desc:after {
 span.game-desc-pre{
 
     display: block;
-    padding: 9.5px;
+    padding: 10px;
     margin: 0 0 10px;
     font-size: 13px;
     line-height: 1.42857143;
@@ -186,3 +191,6 @@ span.game-desc-pre{
     border-radius: 4px;
     overflow: auto;
 }
+/*div.gameadmin-index{*/
+    /*width: 100%;*/
+/*}*/

@@ -30,9 +30,14 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'alias'], 'required'],
-            [['title', 'alias'], 'string', 'max' => 255],
-            [['description'], 'string', 'max' => 5255]
+            [['title', 'alias', 'img'], 'required'],
+            [['title', 'alias', 'img'], 'string', 'max' => 255],
+            [['description'], 'string', 'max' => 5255],
+            ['alias', 'filter', 'filter' => function ($value) {
+                    // normalize alias input here
+                    return Game::str2url($this->title);
+                }],
+            [['alias','title'], 'unique'],
         ];
     }
 
@@ -44,7 +49,8 @@ class Category extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'title' => 'Название категории',
-            'img' => 'Изображение',
+            'alias'=>'Урла категории',
+            'img' => 'изображение категории',
         ];
     }
 
@@ -70,6 +76,7 @@ class Category extends \yii\db\ActiveRecord
 
         $category_list = Category::getListCategory();
         $result = array();
+        $result[]=['label' => 'Все категории', 'url' =>Url::to(['/categorys'])];//
         foreach($category_list as $category){
             $result[]=['label' => $category['title'], 'url' =>Url::to(['/category/view','alias'=>$category['alias']])];//
         }

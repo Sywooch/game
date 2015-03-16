@@ -14,20 +14,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?php
-            //echo  Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
-        ?>
-        <?php
-        /*echo  Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ])*/
-        ?>
-    </p>
+
+    <div class="game-desc">
+        <span class="game-desc-pre"><?=$model->description;?></span>
+    </div>
 
 </div>
 
@@ -40,23 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $gameProvider,
         'itemView' => '_game',
         'pager'        => [
-
             'firstPageLabel'    => 'Начало',
-
             'lastPageLabel'     => 'Конец',
-//
-//            'nextPageLabel'     => Glyph::icon(Glyph::ICON_STEP_FORWARD),
-//
-//            'prevPageLabel'     => Glyph::icon(Glyph::ICON_STEP_BACKWARD),
-
         ],
-        //'summary'=>'',
-        //'layout' => '{summary}\n{items}\n{pager}',
         'layout' => '{pager}<br>{items}',
     ]);
     ?>
-
 </div>
-<style>
-
-</style>

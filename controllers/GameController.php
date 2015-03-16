@@ -87,14 +87,35 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new GameSearch();
+        //$searchModel = new GameSearch();
+//
+//        $dataProvider = $searchModel->search(['publish_status'=>Game::STATUS_PUBLISHED]);
+//
+//        return $this->render('index', [
+//            'searchModel' => $searchModel,
+//            'dataProvider' => $dataProvider,
+//        ]);
 
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //$category = $this->findModel($alias);
+
+        $query = new Query();
+        $query->select(['img','title','alias','id']);
+        $query->from('tbl_game');
+        $query->where(['publish_status'=>Game::STATUS_PUBLISHED]);
+
+        //show all game list
+        $gameProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 28,
+            ],
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            //'searchModel' => $searchModel,
+            'dataProvider' => $gameProvider,
         ]);
+
     }
 
     /**
@@ -221,55 +242,7 @@ class GameController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Game model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Game();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing Game model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModelId($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Game model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModelId($id)->delete();
-
-        return $this->redirect(['index']);
-    }
 
     /**
      * Finds the Game model based on its primary key value.
@@ -280,7 +253,14 @@ class GameController extends Controller
      */
     protected function findModel($alias)
     {
-        if (($model = Game::findOne(['alias'=>$alias])) !== null) {
+
+        if(Yii::$app->user->isGuest){
+            $model = Game::findOne(['alias'=>$alias,'publish_status'=>Game::STATUS_PUBLISHED]);
+        }else{
+            $model = Game::findOne(['alias'=>$alias]);
+        }
+
+        if ($model!== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -289,7 +269,14 @@ class GameController extends Controller
 
     protected function findModelId($id)
     {
-        if (($model = Game::findOne(['id'=>$id])) !== null) {
+
+        if(Yii::$app->user->isGuest){
+            $model = Game::findOne(['id'=>$id, 'publish_status'=>Game::STATUS_PUBLISHED]);
+        }else{
+            $model = Game::findOne(['id'=>$id]);
+        }
+
+        if ($model!== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

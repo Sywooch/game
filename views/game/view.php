@@ -112,7 +112,7 @@ $this->registerMetaTag([
         <span class="game-desc-pre"><?=$model->description;?></span>
     </div>
 
-    <h3>Похожие игры</h3>
+    <h3 >Похожие игры</h3>
     <div class="game-index">
         <?php
             echo ListView::widget([
