@@ -27,8 +27,31 @@ $this->title = 'Управление играми';
         'title',
         'pagetitle',
         'alias',
-        'status',
-        //'img',
+        //'status',
+
+        [
+            'label'=>'Статус',
+            'value'=>'status',
+            'attribute' => 'publish_status',
+            'filter' => Html::activeDropDownList(
+                    $searchModel,
+                    'publish_status',
+                    [\app\models\Game::STATUS_DRAFT=>'Черновик', \app\models\Game::STATUS_PUBLISHED=>'Опубликован'],
+                    ['class' => 'form-control','prompt'=>'']
+                )
+        ],
+
+        [
+            'label'=>'Раздел',
+            'attribute' => 'category',
+            'value' => 'category.title',
+            'filter' => Html::activeDropDownList(
+                    $searchModel,
+                    'category_id',
+                    \yii\helpers\ArrayHelper::map(\app\models\Category::find()->all(),'id','title'),
+                    ['class' => 'form-control','prompt'=>'']
+                )
+        ],
 
         ['class' => 'yii\grid\ActionColumn'],
     ],

@@ -12,6 +12,9 @@ use yii\data\ActiveDataProvider;
  */
 class GameSearch extends Game
 {
+
+    public $category;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +22,7 @@ class GameSearch extends Game
     {
         return [
             [['id', 'category_id','publish_status'], 'integer'],
-            [['title', 'publish_status','file', 'img','alias','pagetitle'], 'safe'],
+            [['title', 'publish_status','file', 'img','alias','pagetitle','category'], 'safe'],
         ];
     }
 
@@ -41,11 +44,13 @@ class GameSearch extends Game
      */
     public function search($params)
     {
-        $query = Game::find()->with('category');
+        $query = Game::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $query->joinWith(['category']);
 
         $this->load($params);
 
@@ -57,16 +62,17 @@ class GameSearch extends Game
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'category_id' => $this->category_id,
+            'tbl_game.id' => $this->id,
+            'tbl_game.category_id' => $this->category_id,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'file', $this->file])
-            ->andFilterWhere(['like', 'pagetitle', $this->pagetitle])
-            ->andFilterWhere(['like', 'alias', $this->alias])
-            ->andFilterWhere(['like', 'publish_status', $this->publish_status])
-            ->andFilterWhere(['like', 'img', $this->img]);
+        $query->andFilterWhere(['like', 'tbl_game.title', $this->title])
+            ->andFilterWhere(['like', 'tbl_game.file', $this->file])
+            ->andFilterWhere(['like', 'tbl_game.pagetitle', $this->pagetitle])
+            ->andFilterWhere(['like', 'tbl_game.alias', $this->alias])
+            ->andFilterWhere(['like', 'tbl_game.publish_status', $this->publish_status])
+            ->andFilterWhere(['like', 'tbl_category.title', $this->category])
+            ->andFilterWhere(['like', 'tbl_game.img', $this->img]);
 
         $dataProvider->pagination = [
             'defaultPageSize' => 28,

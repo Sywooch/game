@@ -12,7 +12,7 @@ use yii\helpers\Url;
 <div class="game">
 
 
-    <?= Html::a(Html::img('@web/img/'.$model['img'], ['alt' => 'My logo','width'=>'234px', 'height'=>'160px']),Url::to(['/game/view', 'alias'=>$model['alias']]), ['style'=>'margin:0 auto;']); ?>
+    <?= Html::a(Html::img('@web/img/'.$model['img'], ['alt' => $model['title'],'width'=>'234px', 'height'=>'160px']),Url::to(['/game/view', 'alias'=>$model['alias']]), ['style'=>'margin:0 auto;']); ?>
 
 
     <?php

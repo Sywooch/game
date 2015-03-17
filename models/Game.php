@@ -71,7 +71,7 @@ class Game extends \yii\db\ActiveRecord
      */
     public function getLastChangesTimestamp()
     {
-        return !empty($this->updated_at) ? $this->updated_at : $this->created_at;
+        return !empty($this->updated_at) ? date('d.m.Y',$this->updated_at) : date('d.m.Y',$this->created_at);
     }
 
     /**
@@ -92,9 +92,10 @@ class Game extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules', 'updated_at', 'created_at','publish_status','description_meta'], 'required'],
+            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules', 'updated_at', 'created_at','publish_status','description_meta'], 'required','on'=>'create'],
+
             [['category_id','counter', 'updated_at', 'created_at','publish_status'], 'integer'],
-            [['title', 'file', 'img','pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
+            [['title', 'pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
             [['description', 'rules'], 'string', 'max' => 6255],
             // normalize "alias" input
             ['alias', 'filter', 'filter' => function ($value) {
@@ -102,6 +103,10 @@ class Game extends \yii\db\ActiveRecord
                     return self::str2url($this->title);
                 }],
             [['alias','title'], 'unique'],
+
+            //validate upload files
+            [['file'], 'file', 'skipOnEmpty' => true], // <--- here!
+            [['img'], 'file', 'skipOnEmpty' => true], // <--- here!
         ];
     }
 
@@ -120,7 +125,7 @@ class Game extends \yii\db\ActiveRecord
             'rules'=>'Как играть',
             'created_at'=>'Дата создания',
             'updated_at'=>'Дата обновления',
-            'status'=>'Статус',
+            //'status'=>'Статус',
             'publish_status'=>'Статус публикации',
             'keywords'=>'Ключевые слова',
             'description'=>'Описание',

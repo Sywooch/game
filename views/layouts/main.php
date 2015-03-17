@@ -14,6 +14,7 @@ use yii\widgets\Menu;
 /* @var $content string */
 
 AppAsset::register($this);
+//
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -21,6 +22,7 @@ AppAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/img/blue-alphabet-letter-g.png" type="image/vnd.microsoft.icon" />
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -31,7 +33,7 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'Game-simple.ru',
+                'brandLabel' => Yii::$app->name,
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-default navbar-fixed-top nav-pills',
@@ -70,7 +72,7 @@ AppAsset::register($this);
                     'options' => ['class' => 'navbar-nav navbar-right'],
                     'items' => [
                         ['label' => 'Игры', 'url' => ['/admin/gameadmin']],
-                        ['label' => 'Категории', 'url' => ['/admin/categorygame']],
+                        ['label' => 'Категории', 'url' => ['/admin/categoryadmin']],
                         ['label' => 'Выход','url' => ['/site/logout'],'linkOptions' => ['data-method' => 'post']],
                     ],
                 ]);
@@ -116,7 +118,7 @@ AppAsset::register($this);
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; Game-simple.ru <?= date('Y') ?></p>
+            <p class="pull-left">&copy; <?=Yii::$app->name;?> <?= date('Y') ?></p>
         </div>
     </footer>
 

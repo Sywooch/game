@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\ListView;
+//use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CategorySearch */
@@ -11,18 +11,22 @@ use yii\widgets\ListView;
 $this->title = 'Разделы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<p><?= Html::a('Добавить раздел', ['create'], ['class' => 'btn btn-success']) ?></p>
+
 <div class="game-index">
 
     <?php
 
-    echo ListView::widget([
+    echo GridView::widget([
         'dataProvider' => $dataProvider,
-        'itemView' => '_category',
-        'pager'        => [
-            'firstPageLabel'    => 'Начало',
-            'lastPageLabel'     => 'Конец',
-        ],
-        'layout' => '{pager}<br>{items}',
+        'filterModel' => $searchModel,
+        'columns' => [
+            'id',
+            'title',
+            'alias',
+            ['class' => 'yii\grid\ActionColumn'],
+        ]
     ]);
     ?>
 </div>

@@ -30,14 +30,15 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'alias', 'img'], 'required'],
-            [['title', 'alias', 'img'], 'string', 'max' => 255],
+            [['title', 'img','description_meta','keyword_meta'], 'required', 'on'=>'create'],
+            [['title', 'alias', 'description_meta','keyword_meta'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 5255],
             ['alias', 'filter', 'filter' => function ($value) {
                     // normalize alias input here
                     return Game::str2url($this->title);
                 }],
             [['alias','title'], 'unique'],
+            [['img'], 'file', 'skipOnEmpty' => true], // <--- here!
         ];
     }
 
@@ -51,6 +52,8 @@ class Category extends \yii\db\ActiveRecord
             'title' => 'Название категории',
             'alias'=>'Урла категории',
             'img' => 'изображение категории',
+            'keyword_meta'=>'Ключевые слова(мета)',
+            'description_meta'=>'Описание(мета)',
         ];
     }
 

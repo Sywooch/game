@@ -30,7 +30,7 @@ $this->registerMetaTag([
 
 <div class="game-view" >
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-warning"><?= Html::encode($this->title) ?></h1>
 
     <div class="game-flash">
         <div class="game-flash-file">
@@ -108,11 +108,21 @@ $this->registerMetaTag([
     </div>
 
 
-    <div class="game-desc">
-        <span class="game-desc-pre"><?=$model->description;?></span>
+    <div class="game-info">
+        <span class="text-info">Дата добавления игры: <?=$model->LastChangesTimestamp;?></span> |
+        <span class="text-info">Количество просмотров: <?=$model->counter;?></span>
     </div>
 
-    <h3 >Похожие игры</h3>
+    <div class="game-desc">
+        <div class="game-desc-pre">
+            <?= Html::img('@web/img/'.$model['img'], ['alt' => $model['title'],'class'=>'img-rounded' , 'width'=>'234px', 'height'=>'160px']);?>
+            <div class="game-desc-pre-text">
+                <?=$model->description;?>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-info">Похожие игры</h3>
     <div class="game-index">
         <?php
             echo ListView::widget([

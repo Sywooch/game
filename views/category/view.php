@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <div class="game-desc">
-        <span class="game-desc-pre"><?=$model->description;?></span>
+        <div class="game-desc-pre"><?=$model->description;?></div>
     </div>
 
 </div>

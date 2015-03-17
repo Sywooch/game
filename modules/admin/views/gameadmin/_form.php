@@ -12,7 +12,7 @@ use \app\models\Category;
 
 <div class="game-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?php
         $category = Category::find()->all();
@@ -39,9 +39,26 @@ use \app\models\Category;
     <?= $form->field($model, 'description_meta')->textarea(['cols'=>5, 'rows'=>5]) ?>
 
 
-    <?= $form->field($model, 'file')->textInput(['maxlength' => 255]) ?>
+    <?= $form->field($model, 'file')->fileInput() ?>
 
-    <?= $form->field($model, 'img')->textInput(['maxlength' => 255]) ?>
+    <?php
+    //if exist file show into form
+    if(file_exists('flash/'.$model->file)){
+        echo Html::a('Ссылка на файл',['/flash/'.$model->file], ['target'=>'_blank']);
+    }
+    ?>
+
+<br><br>
+
+    <?= $form->field($model, 'img')->fileInput() ?>
+
+    <?php
+    //if exist file show into form
+    if(file_exists(Yii::getAlias('@app/web/').'img/'.$model->img)){
+        echo Html::img('/img/'.$model->img);
+    }
+    ?>
+
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

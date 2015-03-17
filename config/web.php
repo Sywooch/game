@@ -9,6 +9,7 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru',
     'sourceLanguage' => 'ru',
+    'name' => 'Game-simple.ru',
 
     //'defaultRoute' => 'game/index',
 

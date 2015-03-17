@@ -51,15 +51,15 @@ class GameController extends Controller
             ],
 //            [
 //                'class' => 'yii\filters\PageCache',
-//                'only' => ['index'],
+//                'only' => ['view'],
 //                'duration' => 120,
 //                'variations' => [
 //                    \Yii::$app->language,
 //                ],
-////                'dependency' => [
-////                    'class' => 'yii\caching\DbDependency',
-////                    'sql' => 'SELECT COUNT(*) FROM tbl_game',
-////                ],
+//                'dependency' => [
+//                    'class' => 'yii\caching\DbDependency',
+//                    'sql' => 'SELECT COUNT(*) FROM tbl_game',
+//                ],
 //            ],
 //            [
 //                'class' => 'yii\filters\HttpCache',
@@ -87,21 +87,17 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
-        //$searchModel = new GameSearch();
-//
-//        $dataProvider = $searchModel->search(['publish_status'=>Game::STATUS_PUBLISHED]);
-//
-//        return $this->render('index', [
-//            'searchModel' => $searchModel,
-//            'dataProvider' => $dataProvider,
-//        ]);
 
-        //$category = $this->findModel($alias);
+        //$this->
 
         $query = new Query();
         $query->select(['img','title','alias','id']);
         $query->from('tbl_game');
-        $query->where(['publish_status'=>Game::STATUS_PUBLISHED]);
+        //for guest we show only published pages
+        if(Yii::$app->user->isGuest){
+            $query->Where(['publish_status'=>Game::STATUS_PUBLISHED]);
+        }
+        $query->orderBy('updated_at ASC');
 
         //show all game list
         $gameProvider = new ActiveDataProvider([
@@ -112,7 +108,6 @@ class GameController extends Controller
         ]);
 
         return $this->render('index', [
-            //'searchModel' => $searchModel,
             'dataProvider' => $gameProvider,
         ]);
 
@@ -129,16 +124,30 @@ class GameController extends Controller
         $model = $this->findModel($alias);
 
         //find others games from this category(similar-games)
-        $searchModel = new GameSearch();
 
-        $similar = $searchModel->similarSearch($model->category_id, $model->id);
+        $query = (new \yii\db\Query())
+            ->from('tbl_game')
+            ->where(['category_id'=>$model->category_id])
+            ->andWhere(['not in', 'id', $model->id]);
+
+        //for guest we show only published pages
+        if(Yii::$app->user->isGuest){
+            $query->andWhere(['publish_status'=>Game::STATUS_PUBLISHED]);
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'defaultPageSize' => 16,
+            ],
+        ]);
 
         //add +1 to counter of game
         //$model->updateCounters(['counter'=>1]);
 
         return $this->render('view', [
             'model' => $model,
-            'similarDataProvider'=>$similar,
+            'similarDataProvider'=>$dataProvider,
         ]);
     }
 

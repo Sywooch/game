@@ -22,6 +22,9 @@ div.category-row{
     vertical-align: top;
 }
 
+.game-info{
+    margin-top: 10px;
+}
 
 div.game-flash-buttons{
     float: right;
@@ -176,7 +179,16 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
-span.game-desc-pre{
+
+div.game-desc-pre>img{
+    float: left;
+    margin-right: 7px;
+}
+div.game-desc-pre-text{
+    margin: 7px 0 7px 7px;
+
+}
+div.game-desc-pre{
 
     display: block;
     padding: 10px;
@@ -184,13 +196,25 @@ span.game-desc-pre{
     font-size: 13px;
     line-height: 1.42857143;
     color: #333;
-    word-break: break-all;
-    word-wrap: break-word;
+    /*word-break: break-all;*/
+    /*word-wrap: break-word;*/
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 4px;
     overflow: auto;
+
 }
 /*div.gameadmin-index{*/
     /*width: 100%;*/
 /*}*/
+
+div.bs-example {
+    position: relative;
+    padding: 45px 15px 15px;
+    margin: 0 -15px 15px;
+    border-color: #e5e5e5 #eee #eee;
+    border-style: solid;
+    border-width: 1px 0;
+    -webkit-box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
+}
