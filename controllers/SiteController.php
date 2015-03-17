@@ -52,6 +52,13 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    /*
+     * when updating the site this action show to user
+     */
+    public function actionOffline(){
+        return $this->render('offline');
+    }
+
 
     /*
      * result yandex search page

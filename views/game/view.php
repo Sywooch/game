@@ -138,7 +138,7 @@ $this->registerMetaTag([
 
     <?php
         $this->registerJs('VK.init({apiId: 4825408, onlyWidgets: true});',View::POS_END, 'myKey');
-        $this->registerJs('VK.Widgets.Comments("vk_comments", {limit: 10, width: "665", attach: "*"});',View::POS_END, 'myKey1');
+        $this->registerJs('VK.Widgets.Comments("vk_comments", {limit: 10, width: "950", attach: "*"});',View::POS_END, 'myKey1');
     ?>
 
 </div>

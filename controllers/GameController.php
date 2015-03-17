@@ -88,8 +88,6 @@ class GameController extends Controller
     public function actionIndex()
     {
 
-        //$this->
-
         $query = new Query();
         $query->select(['img','title','alias','id']);
         $query->from('tbl_game');

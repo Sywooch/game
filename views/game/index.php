@@ -5,14 +5,21 @@ use yii\widgets\ListView;
 /* @var $searchModel app\models\GameSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Games';
+$this->title = 'Флеш игры бесплатно дл всех на '.Yii::$app->name;
 //$this->params['breadcrumbs'][] = $this->title;
 
+$this->registerMetaTag([
+    'name' => 'keyword',
+    'content' => 'Флеш игры бесплатно для всех'
+]);
 
 $this->registerMetaTag([
     'name' => 'description',
-    'content' => 'some description'
+    'content' => 'Играй бесплатно онлайн в самые популярные флеш игры для всех, которые мы специально выбрали,
+    и добавили на сайт!
+    Только у нас вы найдете самые интересные и увлекательные игры для всех возрастов, которые не заставят вас скучать.'
 ]);
+
 
 ?>
 <div class="game-index">
@@ -24,7 +31,7 @@ $this->registerMetaTag([
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',
         ],
-        'layout' => '{pager}<br>{items}',
+        'layout' => '{pager}<br>{items}{pager}',
     ]);
     ?>
 </div>

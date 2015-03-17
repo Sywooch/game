@@ -9,6 +9,18 @@ use yii\widgets\ListView;
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Разделы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerMetaTag([
+    'name' => 'keyword',
+    'content' => $model->keyword_meta
+]);
+
+$this->registerMetaTag([
+    'name' => 'description',
+    'content' => $model->description_meta
+]);
+
+
 ?>
 <div class="category-view">
 
@@ -33,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',
         ],
-        'layout' => '{pager}<br>{items}',
+        'layout' => '{pager}<br>{items}<br>{pager}',
     ]);
     ?>
 </div>
