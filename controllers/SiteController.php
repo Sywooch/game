@@ -56,7 +56,7 @@ class SiteController extends Controller
     /*
      * result yandex search page
      */
-    public function actionSearch()
+    public function actionSearch($searchid, $text, $web)
     {
         return $this->render('search');
     }

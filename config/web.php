@@ -47,7 +47,8 @@ $config = [
                 ''=>'game/index',
                 'answer'=>'site/answer',
                 'contact'=>'site/contact',
-                'search'=>'site/search',
+                'search'=>'site/search/',
+
                 'login'=>'site/login',
 
                 '<controller:\w+>/page/<page:\d+>' => '<controller>/index',
