@@ -15,6 +15,14 @@ use \app\models\Category;
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?php
+
+    if($model->hasErrors()){
+        echo '<pre>'; print_r($model->errors);
+    }
+
+    ?>
+
+    <?php
         $category = Category::find()->all();
         $listData=ArrayHelper::map($category,'id','title');
         echo $form->field($model, 'category_id')->dropDownList($listData,['prompt'=>'Select...']);
@@ -54,14 +62,19 @@ use \app\models\Category;
 
     <?php
     //if exist file show into form
-    if(file_exists(Yii::getAlias('@app/web/').'img/'.$model->img)){
+    if(file_exists(Yii::getAlias('@app/').Yii::$app->params['upload_image'].$model->img)){
         echo Html::img('/img/'.$model->img);
     }
     ?>
 
-
+    <br><br>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+
+
+
+
+        <?php echo Html::a('Удалить',\yii\helpers\Url::to(['/admin/gameadmin/delete/','id'=>$model->id]), ['class'=>'btn btn-success', 'style'=>'margin-left:30px;']);?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -49,17 +49,32 @@ class GameController extends Controller
                     'delete' => ['post', 'delete'],
                 ],
             ],
+
+//            'pageCache' => [
+//                'class' => PageCache::className(),
+//                'except' => ['login', 'logout'],
+//                'duration' => 5, // seconds
+//                'variations' => [
+//                    Yii::$app->request->get('id'), // record id
+//                    Yii::$app->request->get('page'), // page number
+//                    Yii::$app->request->get('sort'), // sort list
+//                    Yii::$app->request->get('cache'), // reset page -> setFlash -> getFlash
+//                ],
+//            ],
 //            [
 //                'class' => 'yii\filters\PageCache',
-//                'only' => ['view'],
+//                'only' => ['index','view'],
 //                'duration' => 120,
-//                'variations' => [
-//                    \Yii::$app->language,
-//                ],
-//                'dependency' => [
-//                    'class' => 'yii\caching\DbDependency',
-//                    'sql' => 'SELECT COUNT(*) FROM tbl_game',
-//                ],
+//                    'variations' => [
+//                        Yii::$app->request->get('id'), // record id
+//                        Yii::$app->request->get('page'), // page number
+//                        Yii::$app->request->get('sort'), // sort list
+//                        Yii::$app->request->get('cache'), // reset page -> setFlash -> getFlash
+//                    ],
+////                'dependency' => [
+////                    'class' => 'yii\caching\DbDependency',
+////                    'sql' => 'SELECT COUNT(*) FROM tbl_game WHERE publish_status=1',
+////                ],
 //            ],
 //            [
 //                'class' => 'yii\filters\HttpCache',
@@ -87,7 +102,6 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
-
         $query = new Query();
         $query->select(['img','title','alias','id']);
         $query->from('tbl_game');

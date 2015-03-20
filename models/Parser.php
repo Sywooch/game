@@ -184,59 +184,62 @@ class Parser {
     /*
      * парсим страницу категорий-игр
      */
-    public function  parseGameCategory(){
+    public function  parseGameCategory($url_category = ''){
 
-        //с основной страницы - спарсим список категорий
-        $main_page = $this->get('http://onlineguru.ru/');
+        if(!empty($url_category)){
 
-        preg_match_all('/<div class="listgenres__item"><a href="(.*?)">(.*?)<\/a><\/div>/i', $main_page, $category);
+        }else{
+            //с основной страницы - спарсим список категорий
+            $main_page = $this->get('http://onlineguru.ru/');
 
-        //echo '<pre>'; print_r($category); die();
-        //$category[1]-урлы категорий
-        //$category[2]- название категории
+            preg_match_all('/<div class="listgenres__item"><a href="(.*?)">(.*?)<\/a><\/div>/i', $main_page, $category);
 
-        //обходим список категорий
-        foreach($category[1] as $k=>$url_category){
-            //$url_category = 'http://onlineguru.ru/arcade/';
+            //echo '<pre>'; print_r($category); die();
+            //$category[1]-урлы категорий
+            //$category[2]- название категории
 
-            //сперва спарсим урлы на игры с первой страницы категории
-            $content_category_page = $this->get($url_category);
+            //обходим список категорий
+            foreach($category[1] as $k=>$url_category){
+                //$url_category = 'http://onlineguru.ru/arcade/';
 
-            $urls = $this->parseLinksGames($content_category_page);
+                //сперва спарсим урлы на игры с первой страницы категории
+                $content_category_page = $this->get($url_category);
 
-            //echo '<pre>'; print_r($urls);//die();
-            flush();
-
-            //создадим категорию, если её нет
-            $category_id = $this->createCategory($content_category_page,$category[2][$k],$url_category);
-            //$category_id = $this->createCategory($content_category_page,'Аркады',$url_category);
-
-
-            //if($category_id<129){continue;}
-
-
-            //обрабатываем список ссылок на страницы игр
-            $this->parseGamePage($urls, $category_id);
-
-            unset($urls); unset($content_category_page);
-
-            //в каждой категории есть список с разбивкой по страницам, обходим начиная с ПЕРВОЙ
-            for($i=2;$i<1000;$i++){
-
-                $content_category_page = $this->get($url_category.'page'.$i.'/');
-
-                echo $url_category.'page'.$i.'/<br>'; flush();
-
-                //парсим список ссылок на игры на каждой странице категорий(начиная со второй)
                 $urls = $this->parseLinksGames($content_category_page);
-                //echo '<pre>'; print_r($urls); die();
-                if(empty($urls)){  break;}
+
+                //echo '<pre>'; print_r($urls);//die();
+                flush();
+
+                //создадим категорию, если её нет
+                $category_id = $this->createCategory($content_category_page,$category[2][$k],$url_category);
+                //$category_id = $this->createCategory($content_category_page,'Аркады',$url_category);
+
+
+                //if($category_id<129){continue;}
+
 
                 //обрабатываем список ссылок на страницы игр
-                $this->parseGamePage($urls,$category_id);
+                $this->parseGamePage($urls, $category_id);
+
+                unset($urls); unset($content_category_page);
+
+                //в каждой категории есть список с разбивкой по страницам, обходим начиная с ПЕРВОЙ
+                for($i=2;$i<1000;$i++){
+
+                    $content_category_page = $this->get($url_category.'page'.$i.'/');
+
+                    echo $url_category.'page'.$i.'/<br>'; flush();
+
+                    //парсим список ссылок на игры на каждой странице категорий(начиная со второй)
+                    $urls = $this->parseLinksGames($content_category_page);
+                    //echo '<pre>'; print_r($urls); die();
+                    if(empty($urls)){  break;}
+
+                    //обрабатываем список ссылок на страницы игр
+                    $this->parseGamePage($urls,$category_id);
+                }
             }
         }
-
     }
 
     /*

@@ -22,7 +22,7 @@ AppAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="/img/blue-alphabet-letter-g.png" type="image/vnd.microsoft.icon" />
+    <link rel="shortcut icon" href="/img/img_55081e8409007.ico" type="image/vnd.microsoft.icon" />
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>

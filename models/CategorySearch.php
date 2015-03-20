@@ -63,7 +63,7 @@ class CategorySearch extends Category
 
 
         $dataProvider->pagination = [
-            'defaultPageSize' => 12,
+            'defaultPageSize' => 50,
             'pageSizeLimit' => [12, 100],
         ];
 

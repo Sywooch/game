@@ -55,6 +55,11 @@ class CategoryadminController extends Controller{
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $dataProvider->pagination = [
+            'defaultPageSize' => 100,
+            'pageSizeLimit' => [12, 100],
+        ];
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -68,7 +73,7 @@ class CategoryadminController extends Controller{
      */
     public function actionCreate()
     {
-        $dir = Yii::getAlias('@app/web/');
+        $dir = Yii::getAlias('@app/');
 
         $model = new Category();
 
@@ -82,7 +87,7 @@ class CategoryadminController extends Controller{
 
             if ($model->validate()) {
                 if($model->img){
-                    $model->img->saveAs($dir.'/img/' . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image']  . $model->img->baseName  . '.' . $model->img->extension);
                 }
 
                 $model->save();
@@ -107,7 +112,7 @@ class CategoryadminController extends Controller{
     public function actionUpdate($id)
     {
 
-        $dir = Yii::getAlias('@app/web/');
+        $dir = Yii::getAlias('@app/');
 
         $model = $this->findModel($id);
 
@@ -121,7 +126,7 @@ class CategoryadminController extends Controller{
 
             if ($model->validate()) {
                 if($model->img){
-                    $model->img->saveAs($dir.'/img/' . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image']. $model->img->baseName  . '.' . $model->img->extension);
                 }else{
                     $model->img = $img;
                 }

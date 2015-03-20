@@ -15,6 +15,11 @@ $this->registerMetaTag([
     'name' => 'description',
     'content' => 'some description'
 ]);
+
+$this->registerMetaTag([
+    'name' => 'keyword',
+    'content' => 'some keyword'
+]);
 ?>
 
 <h2>Избранные игры</h2>
@@ -28,7 +33,7 @@ $this->registerMetaTag([
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',
         ],
-        'layout' => '{pager}<br>{items}',
+        'layout' => '{pager}<br>{items}<br>{pager}',
     ]);
     ?>
 </div>
