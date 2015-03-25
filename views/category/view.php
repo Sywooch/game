@@ -10,8 +10,11 @@ $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Разделы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+
+$this->title = $model->title. ' бесплатно';
+
 $this->registerMetaTag([
-    'name' => 'keyword',
+    'name' => 'keywords',
     'content' => $model->keyword_meta
 ]);
 
