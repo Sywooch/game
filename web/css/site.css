@@ -10,6 +10,7 @@ div.list-view>div{
 }
 div.title-game{
     width: 195px;
+    font-size: medium;
 }
 
 div.game-flash-file{

@@ -30,7 +30,7 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'img','description_meta','keyword_meta'], 'required', 'on'=>'create'],
+            [['title', 'img'], 'required', 'on'=>'create'],/*,'description_meta','keyword_meta'*/
             [['title', 'alias', 'description_meta','keyword_meta'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 5255],
             ['alias', 'filter', 'filter' => function ($value) {
@@ -84,6 +84,18 @@ class Category extends \yii\db\ActiveRecord
             $result[]=['label' => $category['title'], 'url' =>Url::to(['/category/view','alias'=>$category['alias']])];//
         }
         return $result;
+    }
+
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()) {
+            foreach($this->getGames()->all() as $game){
+                $game->delete();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

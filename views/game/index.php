@@ -31,7 +31,7 @@ $this->registerMetaTag([
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',
         ],
-        'layout' => '{pager}<br>{items}{pager}',
+        'layout' => '{pager}<br>{items}<br>{pager}',
     ]);
     ?>
 </div>

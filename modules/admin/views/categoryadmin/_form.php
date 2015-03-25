@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 
     <?php
     //if exist file show into form
-    if(file_exists(Yii::getAlias('@app/web/').'img/'.$model->img)){
+    if(file_exists(Yii::getAlias('@app/').Yii::$app->params['upload_image'].$model->img)){
         echo Html::img('/img/'.$model->img);
     }
     ?>

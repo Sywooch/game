@@ -92,7 +92,7 @@ class Game extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','url', 'rules', 'updated_at', 'created_at','publish_status','description_meta'], 'required','on'=>'create'],
+            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta'], 'required','on'=>'create'],
 
             [['category_id','counter', 'updated_at', 'created_at','publish_status'], 'integer'],
             [['title', 'pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
@@ -181,18 +181,18 @@ class Game extends \yii\db\ActiveRecord
         return $str;
     }
 
-    /*
-     * find similar games for current game in current category of game
-     */
-    public function similarGames($limit = 9){
+    public function getPathImg(){
+        return Yii::getAlias('@app/'.Yii::$app->params['upload_image'].$this->img);
+    }
 
-//        $queryGame = \app\models\Game::find();
-//
-//        $gameProvider = new ActiveDataProvider([
-//            'query' => $queryGame,
-//            'pagination' => [
-//                'pageSize' => 24,
-//            ],
-//        ]);
+    public function getPathFlash(){
+        return Yii::getAlias('@app/'.Yii::$app->params['upload_flash'].$this->file);
+    }
+
+    public function afterDelete()
+    {
+        unlink($this->getPathImg());
+        unlink($this->getPathFlash());
+        parent::afterDelete();
     }
 }

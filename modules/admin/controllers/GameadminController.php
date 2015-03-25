@@ -68,7 +68,7 @@ class GameadminController extends Controller{
      */
     public function actionCreate()
     {
-        $dir = Yii::getAlias('@app/web/');
+        $dir = Yii::getAlias('@app/');
 
         $model = new Game();
 
@@ -91,14 +91,13 @@ class GameadminController extends Controller{
             if ($model->validate()) {
 
                 if($model->file){
-                    $model->file->saveAs($dir.'/flash/' . $model->file->baseName . '.' . $model->file->extension);
+                    $model->file->saveAs($dir.Yii::$app->params['upload_flash'] . $model->file->baseName . '.' . $model->file->extension);
                 }else{
                     $model->file = $file;
                 }
 
                 if($model->img){
-                    $prefix = uniqid('img_');
-                    $model->img->saveAs($dir.'/img/' . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image'] . $model->img->baseName  . '.' . $model->img->extension);
                 }else{
                     $model->img = $img;
                 }
@@ -123,7 +122,7 @@ class GameadminController extends Controller{
     public function actionUpdate($id)
     {
 
-        $dir = Yii::getAlias('@app/web/');
+        $dir = Yii::getAlias('@app/');
 
         $model = $this->findModelId($id);
 
@@ -144,14 +143,14 @@ class GameadminController extends Controller{
             if ($model->validate()) {
 
                 if($model->file){
-                    $model->file->saveAs($dir.'/flash/' . $model->file->baseName . '.' . $model->file->extension);
+                    $model->file->saveAs($dir.Yii::$app->params['upload_flash']  . $model->file->baseName . '.' . $model->file->extension);
                 }else{
                     $model->file = $file;
                 }
 
                 if($model->img){
                     $prefix = uniqid('img_');
-                    $model->img->saveAs($dir.'/img/' . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image']  . $model->img->baseName  . '.' . $model->img->extension);
                 }else{
                     $model->img = $img;
                 }

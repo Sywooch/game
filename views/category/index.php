@@ -1,21 +1,19 @@
 <?php
 
-use yii\helpers\Html;
-//use yii\grid\GridView;
 use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-//$this->registerMetaTag([
-//    'name' => 'keyword',
-//    'content' => $searchModel->keyword_meta
-//]);
-//
-//$this->registerMetaTag([
-//    'name' => 'description',
-//    'content' => $searchModel->description_meta
-//]);
+$this->registerMetaTag([
+    'name' => 'keyword',
+    'content' => $searchModel->keyword_meta
+]);
+
+$this->registerMetaTag([
+    'name' => 'description',
+    'content' => $searchModel->description_meta
+]);
 $this->title = 'Разделы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -27,9 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     echo ListView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
         'itemView' => '_category',
-        'layout' => '{pager}<br>{items}',
+        'layout' => '{pager}<br>{items}<br>{pager}',
         'pager'        => [
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',
