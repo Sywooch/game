@@ -9,13 +9,8 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru',
     'sourceLanguage' => 'ru',
-    'name' => 'Game-simple.ru',
-
-    //'defaultRoute' => 'game/index',
-
     //when update site
     //'catchAll' => ['site/offline'],
-
     'modules' => [
         'vote' => [
             'class' => 'chiliec\vote\Module',
@@ -23,20 +18,37 @@ $config = [
             'allow_change_vote' => true, // if true vote can be changed
             'matchingModels' => [ // matching model names with whatever unique integer ID
                 'Game' => 1, // may be just integer value
-//                'audio' => ['id'=>1], // or array with 'id' key
-//                'video' => ['id'=>2, 'allow_guests'=>false], // own value 'allow_guests'
-//                'photo' => ['id'=>3, 'allow_guests'=>false, 'allow_change_vote'=>false],
             ],
         ],
 
         'admin' => [
             'class' => 'app\modules\admin\Module',
-            //'defaultaction'=>'index',
             'defaultRoute' => 'gameadmin',
         ],
     ],
 
     'components' => [
+
+        'assetManager' => [
+            'class' => 'yii\web\AssetManager',
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'js' => [
+                        YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
+                    ]
+                ],
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => [
+                        YII_ENV_DEV ? 'css/bootstrap.css' :         'css/bootstrap.min.css',
+                    ]
+                ],
+                'yii\bootstrap\BootstrapPluginAsset' => [
+                    'js' => [
+                        YII_ENV_DEV ? 'js/bootstrap.js' : 'js/bootstrap.min.js',
+                    ]
+                ]
+            ],
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -59,6 +71,9 @@ $config = [
                 'category/<alias>' => 'category/view',
                 'site/captcha'=>'site/captcha',
 
+                //site map
+                ['pattern'=>'sitemap','route'=>'site/sitemap','suffix'=>'.xml'],
+
 
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -66,12 +81,6 @@ $config = [
 
                 '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
                 '<module:\w+>/<controller:\w+>/'=>'<module>/<controller>/index',
-                //'<module:admin><controller:\w+>/<action:update|delete>/<id:\d+>' => 'admin/<controller>/<action>',
-
-
-                //'<controller:\w+>/<alias:\w+>' => '<controller>/view',
-                //'<controller:\w+>/<id:\w+>' => '<controller>/view',
-
             ],
         ],
 
@@ -113,6 +122,7 @@ $config = [
         'db' => require(__DIR__ . '/db.php'),
     ],
     'params' => $params,
+    'name' => $params['name'],
 ];
 
 if (YII_ENV_DEV) {

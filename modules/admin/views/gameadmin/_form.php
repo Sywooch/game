@@ -29,7 +29,18 @@ use \app\models\Category;
     ?>
 
     <?php
-    echo $form->field($model, 'publish_status')->dropDownList(\app\models\Game::getStatuses());
+        echo $form->field($model, 'publish_status')->dropDownList(\app\models\Game::getStatuses());
+    ?>
+
+    <?= $form->field($model, 'updated_at')->widget(\yii\jui\DatePicker::classname(), [
+        'language' => 'ru',
+        'dateFormat' => 'yyyy-MM-dd',
+        'clientOptions' => ['defaultDate' =>date('Y-m-d'),]
+
+    ]) ?>
+
+    <?php
+        echo $form->field($model, 'type_game')->dropDownList(\app\models\Game::getTypes());
     ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => 255]) ?>
@@ -41,7 +52,11 @@ use \app\models\Category;
 
     <?= $form->field($model, 'rules')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['cols'=>5, 'rows'=>10]) ?>
+    <?= $form->field($model, 'description')->textarea(['cols'=>5, 'rows'=>10,'onkeyup'=>'str=this.value;count(str);']) ?>
+
+    <p>без пробелов и переводов строк <b id="b2">0</b></p>
+
+
 
 
     <?= $form->field($model, 'description_meta')->textarea(['cols'=>5, 'rows'=>5]) ?>
@@ -80,3 +95,15 @@ use \app\models\Category;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<script language="javascript">
+    var str='';
+    function count(str)
+    {
+
+        document.getElementById('b2').innerHTML=str.replace(/\s/g,'').length;
+        var st = str.replace(/\n/g,' ') + ' ';
+        st = st.split(/\s* \s*/).length;
+        return false;
+    }
+</script>

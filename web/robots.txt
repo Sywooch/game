@@ -1,2 +1,19 @@
 User-agent: *
-Disallow:
+Disallow: /*.swf$
+Disallow: /file/
+Disallow: /assets/
+Disallow: /search
+Host: game-simple.ru
+
+User-agent: Yandex
+Disallow: /*.swf$
+Disallow: /file/
+Disallow: /assets/
+Disallow: /search
+
+
+User-agent: Googlebot
+Disallow: /*.swf$
+Disallow: /file/
+Disallow: /assets/
+Disallow: /search

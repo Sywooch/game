@@ -22,7 +22,8 @@
         "raoul2000/yii2-scrollup-widget": "*",
         "kartik-v/yii2-popover-x": "*",
         "ijackua/yii2-kudos-widget": "dev-master",
-        "chiliec/yii2-vote": "~2.0"
+        "chiliec/yii2-vote": "~2.0",
+        "yiisoft/yii2-jui": "~2.0.0"
 
     },
     "require-dev": {

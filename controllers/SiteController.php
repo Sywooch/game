@@ -2,7 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\Game;
+use app\models\GameSearch;
+//use app\models\Sitemap;
 use Yii;
+use yii\caching\DbDependency;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -47,18 +51,12 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
-
     /*
      * when updating the site this action show to user
      */
     public function actionOffline(){
         return $this->render('offline');
     }
-
 
     /*
      * result yandex search page
@@ -105,11 +103,6 @@ class SiteController extends Controller
         }
     }
 
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
     /*
      * страница вопрос-ответ
      */
@@ -119,6 +112,26 @@ class SiteController extends Controller
 
     public function actionError(){
         $this->render('error');
+    }
+
+    /*
+     * sitemap of site
+     */
+    public function actionSitemap(){
+
+        header('Content-type: application/xml');
+
+        $duration = 600;//кешируем на 180сек
+
+        $items = Yii::$app->db->createCommand('SELECT alias, title, updated_at FROM tbl_game WHERE publish_status=1 AND updated_at<'.time())->cache($duration)->queryAll();
+
+        $category = Yii::$app->db->createCommand('SELECT alias, title FROM tbl_category')->cache($duration)->queryAll();
+
+        $host = Yii::$app->request->hostInfo;
+
+        echo  $this->renderPartial('sitemap', array('host'=>Yii::$app->request->hostInfo,'items'=>$items,'category'=>$category));
+
+        Yii::$app->end();
     }
 
 }

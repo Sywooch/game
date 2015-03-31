@@ -23,7 +23,13 @@ $this->title = 'Управление играми';
     'columns' => [
         //['class' => 'yii\grid\SerialColumn'],
 
-        'id',
+        //'id',
+        [
+            'label'=>'ID',
+            'value'=>'id',
+            'attribute'=>'id',
+            'contentOptions'=>['style'=>'width:40px']
+        ],
         'title',
         'pagetitle',
         'alias',
@@ -52,6 +58,12 @@ $this->title = 'Управление играми';
                     ['class' => 'form-control','prompt'=>'']
                 )
         ],
+        [
+            'label'=>'Отредактирован',
+            'value'=>'updatedate',
+            'attribute'=>'updated_at'
+        ],
+        //'updated_at',
 
         ['class' => 'yii\grid\ActionColumn'],
     ],

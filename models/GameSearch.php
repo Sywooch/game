@@ -75,8 +75,8 @@ class GameSearch extends Game
             ->andFilterWhere(['like', 'tbl_game.img', $this->img]);
 
         $dataProvider->pagination = [
-            'defaultPageSize' => 28,
-            'pageSizeLimit' => [12, 100],
+            'defaultPageSize' => Yii::$app->params['admin']['count_game_on_page'],
+            //'pageSizeLimit' => [12, 100],
         ];
 
         return $dataProvider;

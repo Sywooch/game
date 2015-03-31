@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e86a54da62a39e9021729ff559048643",
+    "hash": "ab07d8e04ad90e3317b806fa0f3ddbc1",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
-            "version": "v3.3.2",
+            "version": "v3.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "bcf7dd38b5ab180256e2e4fb5da0369551b3f082"
+                "reference": "a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/bcf7dd38b5ab180256e2e4fb5da0369551b3f082",
-                "reference": "bcf7dd38b5ab180256e2e4fb5da0369551b3f082",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f",
+                "reference": "a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f",
                 "shasum": ""
             },
             "require": {
@@ -32,7 +32,8 @@
                     "dist/fonts/glyphicons-halflings-regular.eot",
                     "dist/fonts/glyphicons-halflings-regular.svg",
                     "dist/fonts/glyphicons-halflings-regular.ttf",
-                    "dist/fonts/glyphicons-halflings-regular.woff"
+                    "dist/fonts/glyphicons-halflings-regular.woff",
+                    "dist/fonts/glyphicons-halflings-regular.woff2"
                 ],
                 "bower-asset-ignore": [
                     "/.*",
@@ -101,17 +102,42 @@
             ]
         },
         {
-            "name": "bower-asset/jquery.inputmask",
-            "version": "3.1.61",
+            "name": "bower-asset/jquery-ui",
+            "version": "1.11.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/jquery.inputmask.git",
-                "reference": "f2c086411d2557fc485c47afb3cecfa6c1de9ee2"
+                "url": "https://github.com/components/jqueryui.git",
+                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/jquery.inputmask/zipball/f2c086411d2557fc485c47afb3cecfa6c1de9ee2",
-                "reference": "f2c086411d2557fc485c47afb3cecfa6c1de9ee2",
+                "url": "https://api.github.com/repos/components/jqueryui/zipball/c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
+                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.6"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": [
+                    "jquery-ui.js"
+                ],
+                "bower-asset-ignore": []
+            }
+        },
+        {
+            "name": "bower-asset/jquery.inputmask",
+            "version": "3.1.62",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RobinHerbots/jquery.inputmask.git",
+                "reference": "da1a274cefa18a52a0519ac7ffe8e8d31e950eae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RobinHerbots/jquery.inputmask/zipball/da1a274cefa18a52a0519ac7ffe8e8d31e950eae",
+                "reference": "da1a274cefa18a52a0519ac7ffe8e8d31e950eae",
                 "shasum": ""
             },
             "require": {
@@ -407,16 +433,16 @@
         },
         {
             "name": "kartik-v/bootstrap-popover-x",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/bootstrap-popover-x.git",
-                "reference": "b1d641463d2a287efc10332b8b9aab3508aefa79"
+                "reference": "ce1d165af25f6e6caaf97083e20b5a3ad7c7b7c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/bootstrap-popover-x/zipball/b1d641463d2a287efc10332b8b9aab3508aefa79",
-                "reference": "b1d641463d2a287efc10332b8b9aab3508aefa79",
+                "url": "https://api.github.com/repos/kartik-v/bootstrap-popover-x/zipball/ce1d165af25f6e6caaf97083e20b5a3ad7c7b7c6",
+                "reference": "ce1d165af25f6e6caaf97083e20b5a3ad7c7b7c6",
                 "shasum": ""
             },
             "type": "library",
@@ -447,7 +473,7 @@
                 "popover",
                 "popover-x"
             ],
-            "time": "2015-02-17 11:51:36"
+            "time": "2015-03-18 13:08:39"
         },
         {
             "name": "kartik-v/bootstrap-star-rating",
@@ -907,6 +933,52 @@
             "keywords": [
                 "composer",
                 "extension installer",
+                "yii2"
+            ],
+            "time": "2015-03-01 06:22:44"
+        },
+        {
+            "name": "yiisoft/yii2-jui",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-jui.git",
+                "reference": "6087c5229a90b75f52314296a2ee7f387004e032"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-jui/zipball/6087c5229a90b75f52314296a2ee7f387004e032",
+                "reference": "6087c5229a90b75f52314296a2ee7f387004e032",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery-ui": "1.11.*@stable",
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\jui\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Qiang Xue",
+                    "email": "qiang.xue@gmail.com"
+                }
+            ],
+            "description": "The Jquery UI extension for the Yii framework",
+            "keywords": [
+                "jQuery UI",
                 "yii2"
             ],
             "time": "2015-03-01 06:22:44"

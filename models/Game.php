@@ -5,9 +5,11 @@ namespace app\models;
 use Yii;
 //use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\data\ActiveDataProvider;
+use app\models\GameQuery;
 use yii\db\ActiveRecord;
-
+use yii\helpers\BaseArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
 /**
  * This is the model class for table "{{%game}}".
  *
@@ -24,6 +26,10 @@ class Game extends \yii\db\ActiveRecord
 
     const STATUS_PUBLISHED = 1;
     const STATUS_DRAFT = 0;
+
+    //список констант для типов игры, на основании типа игры выводим кнопку для скачивания доп. плагина для игры, чтобы играть
+    const TYPE_GAME_FLASH = 1;//тип игры флеши-игра
+    const TYPE_GAME_UNITY3D = 2;//тип игры unity 3d
 
     /**
      * @inheritdoc
@@ -46,15 +52,46 @@ class Game extends \yii\db\ActiveRecord
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => 'created_at',
-                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'updated_at',
+                    //ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
                 ],
             ],
             [
                 'class' => \chiliec\vote\behaviors\RatingBehavior::className(),
                 'model_name' => 'Game', // name of this model
             ],
+
+
+//            'sitemap' => [
+//                'class' => SitemapBehavior::className(),
+//                'scope' => function ($model) {
+//                        /** @var \yii\db\ActiveQuery $model */
+//                        $model->select(['alias', 'updated_at']);
+//                        //$model->andWhere(['is_deleted' => 0]);
+//                    },
+//                'dataClosure' => function ($model) {
+//                        /** @var self $model */
+//                        return [
+//                            'loc' => Url::to($model->alias, true),
+//                            'lastmod' => strtotime($model->updated_at),
+//                            'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+//                            'priority' => 0.8
+//                        ];
+//                    }
+//            ],
+
         ];
     }
+
+
+    /*
+     * return type of game
+     */
+    public function getType(){
+        $statuses = self::getTypes();
+        return $statuses[$this->type_game];
+    }
+
 
     /**
      * @return string status
@@ -65,6 +102,9 @@ class Game extends \yii\db\ActiveRecord
         return $statuses[$this->publish_status];
     }
 
+    public function getUpdatedate(){
+        return date('Y-m-d',$this->updated_at);
+    }
 
     /**
      * @return int last changes timestamp
@@ -85,6 +125,16 @@ class Game extends \yii\db\ActiveRecord
         ];
     }
 
+    /*
+     * return array types
+     */
+    public static function getTypes(){
+        return [
+            self::TYPE_GAME_FLASH =>'Flash игра',
+            self::TYPE_GAME_UNITY3D=>'Unity 3D игра',
+        ];
+    }
+
 
     /**
      * @inheritdoc
@@ -92,10 +142,14 @@ class Game extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta'], 'required','on'=>'create'],
+            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta','type_game'], 'required','on'=>'create'],
 
-            [['category_id','counter', 'updated_at', 'created_at','publish_status'], 'integer'],
-            [['title', 'pagetitle','description_meta','url', 'alias'], 'string', 'max' => 255],
+            [['category_id','counter',  'created_at','publish_status','type_game'], 'integer'],
+
+
+            [['updated_at','created_at'], 'default', 'value' => time()],
+
+            [['title', 'pagetitle','description_meta','url', 'alias','keywords'], 'string', 'max' => 255],
             [['description', 'rules'], 'string', 'max' => 6255],
             // normalize "alias" input
             ['alias', 'filter', 'filter' => function ($value) {
@@ -130,6 +184,7 @@ class Game extends \yii\db\ActiveRecord
             'keywords'=>'Ключевые слова',
             'description'=>'Описание',
             'description_meta'=>'Мета-описание',
+            'type_game'=>'Тип игры(unity 3D, Flash и т.д.)',
         ];
     }
 
@@ -169,6 +224,7 @@ class Game extends \yii\db\ActiveRecord
         );
         return strtr($string, $converter);
     }
+
     static function str2url($str) {
         // переводим в транслит
         $str = Game::rus2translit($str);
@@ -194,5 +250,89 @@ class Game extends \yii\db\ActiveRecord
         unlink($this->getPathImg());
         unlink($this->getPathFlash());
         parent::afterDelete();
+    }
+
+    private $_url;
+
+    public function getUrl()
+    {
+        return Url::to(['/game/view','alias'=>$this->alias]);
+    }
+
+    /*
+     * в зависимости от типа игры формируем ссылку для скачивания нужного плагина для игры
+     * $params - доп. параметры при формировании ссылки
+     */
+    public function getPluginLink($params = []){
+        //ссылка на плагин от Unity 3D
+        if($this->type_game==self::TYPE_GAME_UNITY3D){
+            if($params){
+                $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать плагин Unity3D']);
+            }
+            return Html::a('Скачать Unity3D', '/file/Unity3d.rar', $params);
+        }
+        //ссылка на плагин для флеша
+        if($this->type_game==self::TYPE_GAME_FLASH){
+            if($params){
+                $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать flash плагин']);
+            }
+            return Html::a('Скачать Флеш', 'http://get.adobe.com/flashplayer/', $params);
+        }
+
+        return '';
+    }
+
+    /*
+     * в зависимости от типа игрухи формируем код для её вставки на сайт
+     * $what_page - для какой страницы получаем код для отображения, для страницы просмотра не большие размеры флеш игр,
+     * а для страницы на полный экран - ширина и длина игры должны быть максимальными
+     */
+    public function getCodegame($what_page = 'view'){
+
+        //определимся с размерами для отображения
+        if($what_page=='view'){
+            //size game by params
+            $width = Yii::$app->params['width_game'];
+            $height = Yii::$app->params['height_game'];
+        }else{
+            //full size of game
+            $width = '98%';
+            $height = '98%';
+        }
+
+
+        //UNITY 3D  game
+        if($this->type_game==self::TYPE_GAME_UNITY3D){
+            return
+                '<object classid="clsid:444785F1-DE89-4295-863A-D46C3A781394"
+                    codebase="http://webplayer.unity3d.com/download_webplayer/UnityWebPlayer.cab#version=2,0,0,0" height="'.$height.'" id="UnityObject" width="'.$width.'">
+                    <param name="backgroundcolor" />
+                    <param name="bordercolor" value="000000" />
+                    <param name="textcolor" value="FFFFFF" />
+                    <embed height="'.$height.'" pluginspage="http://www.unity3d.com/unity-web-player-2.x"
+                        src="/flash/'.$this->file.'" type="application/vnd.unity" width="'.$width.'">
+                    </embed>
+                </object>';
+        }
+        //Flash-game
+        if($this->type_game == self::TYPE_GAME_FLASH){
+            return
+                '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" width="468" height="60" id="mymoviename">
+                    <param name="movie" value="http://www.tizag.com/pics/example.swf" />
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#ffffff" />
+                    <embed src="/flash/'.$this->file.'" quality="high" bgcolor="#ffffff"
+                           width="'.$width.'" height="'.$height.'"
+                           name="mymoviename" align="" type="application/x-shockwave-flash"
+                           pluginspage="http://www.macromedia.com/go/getflashplayer">
+                    </embed>
+                </object>';
+        }
+
+    }
+
+    public static function find()
+    {
+        return new GameQuery(get_called_class());
     }
 }

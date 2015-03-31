@@ -14,6 +14,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => 255]) ?>
 
+    <?= $form->field($model, 'shot_title')->textInput(['maxlength' => 40]) ?>
+
+
+
     <?= $form->field($model, 'description_meta')->textarea(['cols' => 5,'rows'=>5]) ?>
 
     <?= $form->field($model, 'keyword_meta')->textInput(['maxlength' => 255]) ?>

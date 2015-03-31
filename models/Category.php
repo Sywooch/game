@@ -30,14 +30,14 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'img'], 'required', 'on'=>'create'],/*,'description_meta','keyword_meta'*/
-            [['title', 'alias', 'description_meta','keyword_meta'], 'string', 'max' => 255],
+            [['title', 'img','shot_title'], 'required', 'on'=>'create'],/*,'description_meta','keyword_meta'*/
+            [['title', 'alias','shot_title', 'description_meta','keyword_meta'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 5255],
             ['alias', 'filter', 'filter' => function ($value) {
                     // normalize alias input here
                     return Game::str2url($this->title);
                 }],
-            [['alias','title'], 'unique'],
+            [['alias','title','shot_title'], 'unique'],
             [['img'], 'file', 'skipOnEmpty' => true], // <--- here!
         ];
     }
@@ -54,6 +54,7 @@ class Category extends \yii\db\ActiveRecord
             'img' => 'изображение категории',
             'keyword_meta'=>'Ключевые слова(мета)',
             'description_meta'=>'Описание(мета)',
+            'shot_title'=>'Краткое название категории для списка категорий на всех страницах(меню)',
         ];
     }
 
@@ -72,20 +73,6 @@ class Category extends \yii\db\ActiveRecord
         return Yii::$app->db->createCommand('SELECT title, alias FROM tbl_category')->cache(3600)->queryAll();
     }
 
-    /*
-     * dropdown list for menu
-     */
-    static function dropDownMenu(){
-
-        $category_list = Category::getListCategory();
-        $result = array();
-        $result[]=['label' => 'Все категории', 'url' =>Url::to(['/categorys'])];//
-        foreach($category_list as $category){
-            $result[]=['label' => $category['title'], 'url' =>Url::to(['/category/view','alias'=>$category['alias']])];//
-        }
-        return $result;
-    }
-
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
@@ -98,4 +85,10 @@ class Category extends \yii\db\ActiveRecord
         }
     }
 
+    /*
+     * select all category to show on all pages of site
+     */
+    static function categoryListMain(){
+        return Yii::$app->db->createCommand('SELECT shot_title, alias, img FROM tbl_category ORDER BY shot_title')->queryAll();
+    }
 }

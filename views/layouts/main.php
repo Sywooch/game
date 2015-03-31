@@ -1,20 +1,16 @@
 <?php
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 use raoul2000\widget\scrollup\Scrollup;
-
-
-use yii\widgets\Menu;
+use app\components\CategoryWidget;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
 AppAsset::register($this);
-//
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -54,12 +50,6 @@ AppAsset::register($this);
                     'options' => ['class' => 'navbar-nav navbar-right'],
                     'items' => [
                         \app\models\User::getFavoriteGameCount(),
-                        [
-                            'label' => 'Разделы',
-                            'items' =>
-                                \app\models\Category::dropDownMenu(),
-                        ],
-
                         ['label' => 'Вопрос/Ответ', 'url' => ['/site/answer']],
                         ['label' => 'Обратная связь', 'url' => ['/site/contact']],
                     ],
@@ -109,7 +99,23 @@ AppAsset::register($this);
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ])
              ?>
+
             <?= $content ?>
+
+
+            <div class="main-list-category">
+                <?php
+                /*['dependency' => ['class' => 'yii\caching\DbDependency','sql' => 'SELECT MAX(id) FROM tbl_category']]*/
+                if ($this->beginCache('category_list', ['duration' => 3600])) {
+
+                    //generate category list
+                    echo CategoryWidget::widget();
+
+                    $this->endCache();
+                }
+                ?>
+            </div>
+
         </div>
 
     </div>
@@ -118,7 +124,21 @@ AppAsset::register($this);
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; <?=Yii::$app->name;?> <?= date('Y') ?></p>
+            <p class="pull-left">&copy; <?=Yii::$app->name;?> <?= date('Y') ?> | <?php echo Html::a('Карта сайта', ['/sitemap.xml/']); ?></p>
+
+            <p class="pull-right">
+                <!--LiveInternet counter--><script type="text/javascript"><!--
+                    document.write("<a href='//www.liveinternet.ru/click' "+
+                        "target=_blank><img src='//counter.yadro.ru/hit?t26.11;r"+
+                        escape(document.referrer)+((typeof(screen)=="undefined")?"":
+                        ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+                            screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+                        ";"+Math.random()+
+                        "' alt='' title='LiveInternet: показано число посетителей за"+
+                        " сегодня' "+
+                        "border='0' width='88' height='15'><\/a>")
+                    //--></script><!--/LiveInternet-->
+            </p>
         </div>
     </footer>
 

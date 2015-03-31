@@ -7,18 +7,18 @@
  */
 use yii\widgets\ListView;
 
-$this->title = 'Games';
-$this->params['breadcrumbs'][] = 'Избранные игры';
+$this->title = 'Мои избранные игры на '.strtoupper(Yii::$app->name);
 
+$this->params['breadcrumbs'][] = 'Избранные игры';
 
 $this->registerMetaTag([
     'name' => 'description',
-    'content' => 'some description'
+    'content' => Yii::$app->params['params_main_page']['desc']
 ]);
 
 $this->registerMetaTag([
     'name' => 'keyword',
-    'content' => 'some keyword'
+    'content' => Yii::$app->params['params_main_page']['keywords']
 ]);
 ?>
 
@@ -29,6 +29,7 @@ $this->registerMetaTag([
     echo ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => '_game_array',
+        'id'=>'main_game_list',
         'pager'        => [
             'firstPageLabel'    => 'Начало',
             'lastPageLabel'     => 'Конец',

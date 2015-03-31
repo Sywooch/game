@@ -7,11 +7,7 @@ use yii\widgets\ListView;
 /* @var $model app\models\Category */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Разделы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
-
-$this->title = $model->title. ' бесплатно';
 
 $this->registerMetaTag([
     'name' => 'keywords',
@@ -22,33 +18,26 @@ $this->registerMetaTag([
     'name' => 'description',
     'content' => $model->description_meta
 ]);
-
-
 ?>
-<div class="category-view">
-
+<div class="game-view">
     <h1><?= Html::encode($this->title) ?></h1>
-
-
     <div class="game-desc">
         <div class="game-desc-pre"><?=$model->description;?></div>
     </div>
-
+    <div class="game-index">
+        <?php
+            echo ListView::widget([
+                'dataProvider' => $gameProvider,
+                'itemView' => '_game',
+                'id'=>'main_game_list',
+                'pager'        => [
+                    'firstPageLabel'    => 'Начало',
+                    'lastPageLabel'     => 'Конец',
+                ],
+                'layout' => '{pager}<br>{items}<br>{pager}',
+            ]);
+        ?>
+    </div>
 </div>
 
 
-<div class="game-index">
-
-    <?php
-
-    echo ListView::widget([
-        'dataProvider' => $gameProvider,
-        'itemView' => '_game',
-        'pager'        => [
-            'firstPageLabel'    => 'Начало',
-            'lastPageLabel'     => 'Конец',
-        ],
-        'layout' => '{pager}<br>{items}<br>{pager}',
-    ]);
-    ?>
-</div>

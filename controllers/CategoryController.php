@@ -18,25 +18,6 @@ use yii\data\ActiveDataProvider;
  */
 class CategoryController extends Controller
 {
-
-    public $defaultAction = 'index';
-
-
-    /**
-     * Lists all Category models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new CategorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
     /**
      * Displays a single Category model.
      * @param integer $id
@@ -46,22 +27,18 @@ class CategoryController extends Controller
     {
         $category = $this->findModel($alias);
 
-        $query = new Query();
-        $query->select(['img','title','alias']);
-        $query->from('tbl_game');
-        $query->where(['category_id'=>$category->id]);
-
-        //for guest we show only published pages
-        if(Yii::$app->user->isGuest){
-            $query->andWhere(['publish_status'=>Game::STATUS_PUBLISHED]);
-        }
-
+        $query = Game::find()
+            ->selectMain()
+            ->publish()
+            ->timepublish()
+            ->category($category->id)
+            ->orderBy('updated_at DESC');
 
         //show all game list
         $gameProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 28,
+                'pageSize' => Yii::$app->params['params_category_page']['count_games_on_page'],
             ],
         ]);
 
@@ -84,7 +61,7 @@ class CategoryController extends Controller
         if (($model = Category::findOne(['alias'=>$alias])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Не удалось найти указанную страницу.');
         }
     }
 }

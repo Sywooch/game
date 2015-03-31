@@ -13,13 +13,13 @@ use app\models\Category;
 use app\models\CategorySearch;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
+
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
 
-class CategoryadminController extends Controller{
+class CategoryadminController extends BaseAdminController{
 
     public $defaultAction = 'index';
 

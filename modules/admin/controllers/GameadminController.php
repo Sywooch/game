@@ -19,7 +19,7 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
-class GameadminController extends Controller{
+class GameadminController extends BaseAdminController{
 
     public $defaultAction = 'index';
 
@@ -124,6 +124,8 @@ class GameadminController extends Controller{
 
         $dir = Yii::getAlias('@app/');
 
+        //Yii::$app->formatter->format('11-10-2014', 'date');
+
         $model = $this->findModelId($id);
 
         //send POST - request to update
@@ -133,12 +135,23 @@ class GameadminController extends Controller{
             $img = $model->img;
             $file = $model->file;
 
+            $update_time_old = $model->updated_at;
+
             //load data from POST
             $model->load(Yii::$app->request->post());
 
             //upload selected files
             $model->file = UploadedFile::getInstance($model, 'file');//flash game
             $model->img = UploadedFile::getInstance($model, 'img');//image of game
+
+            //если мы указали дату поста принудительно, то используем её для установки значения
+            if($model->updated_at){
+                $model->updated_at = strtotime($model->updated_at);
+            }else{
+                // если мы НЕ указывали значение, тогда установим текущее время
+                $model->updated_at = time();
+            }
+
 
             if ($model->validate()) {
 
@@ -195,15 +208,19 @@ class GameadminController extends Controller{
 
         //find others games from this category(similar-games)
 
-        $query = (new \yii\db\Query())
-            ->from('tbl_game')
-            ->where(['category_id'=>$model->category_id])
-            ->andWhere(['not in', 'id', $model->id]);
+        $query = Game::find()
+            ->Where(['not in', 'id', $model->id])
+            ->category($model->category_id)
+            ->publish()
+            ->timepublish()
+            ->limit(Yii::$app->params['count_similar_games_page_view'])
+            ->orderBy('updated_at DESC');
 
-        //for guest we show only published pages
-        if(Yii::$app->user->isGuest){
-            $query->andWhere(['publish_status'=>Game::STATUS_PUBLISHED]);
-        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => false,
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -211,9 +228,6 @@ class GameadminController extends Controller{
                 'defaultPageSize' => 16,
             ],
         ]);
-
-        //add +1 to counter of game
-        //$model->updateCounters(['counter'=>1]);
 
         return $this->render('@app/views/game/view', [
             'model' => $model,

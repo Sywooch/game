@@ -11,6 +11,7 @@ div.list-view>div{
 div.title-game{
     width: 195px;
     font-size: medium;
+    text-align: center ;
 }
 
 div.game-flash-file{
@@ -23,25 +24,84 @@ div.category-row{
     vertical-align: top;
 }
 
+
 .game-info{
     margin-top: 10px;
 }
 
+div.main-list-category{
+    /*border: 1px solid red;*/
+    float: right;
+    position: relative;
+
+    width: 300px;
+    display: inline-block;
+
+    /*columns: 60px auto;*/
+
+
+}
+
+div.game-index h2{
+    text-align: center;
+}
+
+ul#category_list{
+    list-style-type: none;
+    margin-left: 0px;
+
+}
+
+
+div.container{
+    width: 1220px;
+}
+
+ul#category_list>li{
+    vertical-align: top;
+    display: inline-block;
+    float: left;
+    width: 49%;
+    padding-left: 5px;
+    text-align: center;
+    /*border: 1px solid #ccc;*/
+
+}
+div.game-index, div.game-view, div.category-view{
+    width: 890px;
+    float: left;
+
+
+
+    /*position: fixed;*/
+}
+#main_game_list{
+    margin-left: 15px;
+}
+
+h3.text-info{
+    text-align: center;
+}
+li div.category-menu{
+    padding:0px;
+    background-color:#ffffff;
+}
+
 div.game-flash-buttons{
     float: right;
-    width: 120px;
+    width: 150px;
     /*padding-left: -80px;*/
     height: 250px;
     /*border: 1px solid red;*/
     margin-top: 0px;
 }
 a.flash-buttons, button.flash-buttons{
-    width: 181px;
+    width: 125px;
     margin-bottom: 30px;
 }
 
 div.game-desc{
-    width: 950px;
+    width: 890px;
     margin-top: 10px;
 }
 
@@ -74,7 +134,7 @@ div.list-view>div{
     display: inline-block;
 }
 div.title-game{
-    width: 195px;
+    width: 175px;
 }
 
 #scrollup {
