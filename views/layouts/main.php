@@ -29,7 +29,7 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => Yii::$app->name,
+                'brandLabel' => Html::img('/img/Original_transparent_120x751.png',['style'=>'margin-top:-25px']),
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-default navbar-fixed-top nav-pills',

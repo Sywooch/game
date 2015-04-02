@@ -12,13 +12,13 @@ use \app\models\Category;
 
 <div class="game-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'],'enableClientValidation'=>false]); ?>
 
     <?php
 
-    if($model->hasErrors()){
-        echo '<pre>'; print_r($model->errors);
-    }
+//    if($model->hasErrors()){
+//        echo '<pre>'; print_r($model->errors);
+//    }
 
     ?>
 
@@ -62,7 +62,10 @@ use \app\models\Category;
     <?= $form->field($model, 'description_meta')->textarea(['cols'=>5, 'rows'=>5]) ?>
 
 
+
     <?= $form->field($model, 'file')->fileInput() ?>
+
+    <?= $form->field($model, 'game_code')->textarea(['cols'=>5, 'rows'=>5]) ?>
 
     <?php
     //if exist file show into form

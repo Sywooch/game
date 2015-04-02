@@ -28,8 +28,9 @@ class Game extends \yii\db\ActiveRecord
     const STATUS_DRAFT = 0;
 
     //список констант для типов игры, на основании типа игры выводим кнопку для скачивания доп. плагина для игры, чтобы играть
-    const TYPE_GAME_FLASH = 1;//тип игры флеши-игра
-    const TYPE_GAME_UNITY3D = 2;//тип игры unity 3d
+    const TYPE_GAME_FLASH = 1;//тип игры флеши-игра(файл загружаем через форму)
+    const TYPE_GAME_UNITY3D = 2;//тип игры unity 3d(файл загружаем через форму)
+    const TYPE_GAME_CODE = 3;//типа игры будет не файл, а код вставки, который будет отображать игру на моей странице
 
     /**
      * @inheritdoc
@@ -42,12 +43,6 @@ class Game extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-//            [
-//                'class' => TimestampBehavior::className(),
-//                'createdAtAttribute' => 'created_at',
-//                'updatedAtAttribute' => 'updated_at',
-//                'value' => time(),
-//            ],
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
@@ -60,30 +55,8 @@ class Game extends \yii\db\ActiveRecord
                 'class' => \chiliec\vote\behaviors\RatingBehavior::className(),
                 'model_name' => 'Game', // name of this model
             ],
-
-
-//            'sitemap' => [
-//                'class' => SitemapBehavior::className(),
-//                'scope' => function ($model) {
-//                        /** @var \yii\db\ActiveQuery $model */
-//                        $model->select(['alias', 'updated_at']);
-//                        //$model->andWhere(['is_deleted' => 0]);
-//                    },
-//                'dataClosure' => function ($model) {
-//                        /** @var self $model */
-//                        return [
-//                            'loc' => Url::to($model->alias, true),
-//                            'lastmod' => strtotime($model->updated_at),
-//                            'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
-//                            'priority' => 0.8
-//                        ];
-//                    }
-//            ],
-
         ];
     }
-
-
     /*
      * return type of game
      */
@@ -91,7 +64,6 @@ class Game extends \yii\db\ActiveRecord
         $statuses = self::getTypes();
         return $statuses[$this->type_game];
     }
-
 
     /**
      * @return string status
@@ -132,6 +104,7 @@ class Game extends \yii\db\ActiveRecord
         return [
             self::TYPE_GAME_FLASH =>'Flash игра',
             self::TYPE_GAME_UNITY3D=>'Unity 3D игра',
+            self::TYPE_GAME_CODE=>'Код для вставки игры(целиком код). Проставить размеры(width='.Yii::$app->params['width_game'].', height='.Yii::$app->params['height_game'].')',
         ];
     }
 
@@ -142,15 +115,32 @@ class Game extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'title', 'file', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta','type_game'], 'required','on'=>'create'],
+
+            [['category_id', 'title', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta','type_game'], 'required','on'=>'create'],
+
+            //если выбрали тип игры-код вставки с др. сайта, то загружать файл игры не надо
+            ['file', 'required', 'when' => function($model) {
+                if($model->type_game){
+                    if($model->type_game == Game::TYPE_GAME_FLASH || $model->type_game == Game::TYPE_GAME_UNITY3D){
+                        return true;
+                    }
+                }
+            }],
+
+            ['game_code', 'required','when' => function($model) {
+                if($model->type_game) {
+                    return $model->type_game == Game::TYPE_GAME_CODE;
+                }
+            }],
 
             [['category_id','counter',  'created_at','publish_status','type_game'], 'integer'],
 
-
             [['updated_at','created_at'], 'default', 'value' => time()],
 
+            [['file'],'default', 'value'=>''],
+
             [['title', 'pagetitle','description_meta','url', 'alias','keywords'], 'string', 'max' => 255],
-            [['description', 'rules'], 'string', 'max' => 6255],
+            [['description', 'rules', 'game_code'], 'string', 'max' => 6255],
             // normalize "alias" input
             ['alias', 'filter', 'filter' => function ($value) {
                     // normalize alias input here
@@ -300,7 +290,6 @@ class Game extends \yii\db\ActiveRecord
             $height = '98%';
         }
 
-
         //UNITY 3D  game
         if($this->type_game==self::TYPE_GAME_UNITY3D){
             return
@@ -320,15 +309,20 @@ class Game extends \yii\db\ActiveRecord
                 '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" width="468" height="60" id="mymoviename">
                     <param name="movie" value="http://www.tizag.com/pics/example.swf" />
                     <param name="quality" value="high" />
+                    <param name="wmode" value="direct" /
                     <param name="bgcolor" value="#ffffff" />
                     <embed src="/flash/'.$this->file.'" quality="high" bgcolor="#ffffff"
-                           width="'.$width.'" height="'.$height.'"
+                           width="'.$width.'" height="'.$height.'"  wmode="direct"
                            name="mymoviename" align="" type="application/x-shockwave-flash"
                            pluginspage="http://www.macromedia.com/go/getflashplayer">
                     </embed>
                 </object>';
         }
 
+        //код игры с другого сайта, файл не загружали по игре
+        if($this->type_game==self::TYPE_GAME_CODE){
+            return $this->game_code;
+        }
     }
 
     public static function find()
