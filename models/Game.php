@@ -7,6 +7,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use app\models\GameQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\BaseArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -14,7 +15,6 @@ use yii\helpers\Url;
  * This is the model class for table "{{%game}}".
  *
  * @property integer $id
- * @property integer $category_id
  * @property string $title
  * @property string $file
  * @property string $img
@@ -47,7 +47,7 @@ class Game extends \yii\db\ActiveRecord
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => 'created_at',
-                    ActiveRecord::EVENT_BEFORE_INSERT => 'updated_at',
+                    //ActiveRecord::EVENT_BEFORE_INSERT => 'updated_at',
                     //ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
                 ],
             ],
@@ -75,7 +75,11 @@ class Game extends \yii\db\ActiveRecord
     }
 
     public function getUpdatedate(){
-        return date('Y-m-d',$this->updated_at);
+        if(Yii::$app->user->isGuest){
+            return date('Y-m-d',$this->updated_at);
+        }else{
+            return date('Y-m-d H:i:s',$this->updated_at);
+        }
     }
 
     /**
@@ -116,8 +120,11 @@ class Game extends \yii\db\ActiveRecord
     {
         return [
 
-            [['category_id', 'title', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta','type_game'], 'required','on'=>'create'],
+            [['updated_at','categorys'], 'safe'],
 
+            [['title', 'img','pagetitle','keywords','description','rules', 'publish_status','description_meta','type_game'], 'required','on'=>'create'],
+
+            [['categorys'], 'required'],
             //если выбрали тип игры-код вставки с др. сайта, то загружать файл игры не надо
             ['file', 'required', 'when' => function($model) {
                 if($model->type_game){
@@ -125,17 +132,17 @@ class Game extends \yii\db\ActiveRecord
                         return true;
                     }
                 }
-            }],
+            },'on'=>'create'],
 
             ['game_code', 'required','when' => function($model) {
                 if($model->type_game) {
                     return $model->type_game == Game::TYPE_GAME_CODE;
                 }
-            }],
+            },'on'=>'create'],
 
-            [['category_id','counter',  'created_at','publish_status','type_game'], 'integer'],
+            [['counter',  'created_at','publish_status','type_game'], 'integer'],
 
-            [['updated_at','created_at'], 'default', 'value' => time()],
+            [['created_at'], 'default', 'value' => time()],
 
             [['file'],'default', 'value'=>''],
 
@@ -147,6 +154,7 @@ class Game extends \yii\db\ActiveRecord
                     return self::str2url($this->title);
                 }],
             [['alias','title'], 'unique'],
+
 
             //validate upload files
             [['file'], 'file', 'skipOnEmpty' => true], // <--- here!
@@ -161,7 +169,6 @@ class Game extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'category_id' => 'Категория',
             'title' => 'Заголовок',
             'file' => 'Файл',
             'img' => 'Изображение',
@@ -175,15 +182,63 @@ class Game extends \yii\db\ActiveRecord
             'description'=>'Описание',
             'description_meta'=>'Мета-описание',
             'type_game'=>'Тип игры(unity 3D, Flash и т.д.)',
+            'categorys'=>'Категория',
         ];
+    }
+
+    /*
+     * @return \yii\db\ActiveQuery
+     * получаем список категорий к которым подвязана игра(используем при формировании хлебных крошек)
+     */
+    public function getRelationCategory(){
+        return $this->hasMany(Category::className(), ['id' => 'category_id'])->viaTable(GameCategory::tableName(), ['game_id'=>'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * количество категорий к которым мы подвязали игру
+     */
+    public function getCountCategory()
+    {
+        return $this->hasOne(GameCategory::className(), ['game_id' => 'id'])->count();
+    }
+
+    /*
+     * формируем ссылку на категорию по игре, в хлебных крошках
+     * $breakCrumbs - массив хлебных крошек, который формируем на странице, мы добавим в него ссылку на категорию, если надо
+     */
+    public function getBreakcrumbsLinkCategory(){
+
+        if($this->getCountCategory()==1){
+
+            $category = $this->getRelationCategory()->one();
+
+            return  ['label' => $category->title, 'url' => Url::to(['/category/view','alias'=>$category->alias])];
+        }
+
+        return '';
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getGameCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+        return $this->hasMany(GameCategory::className(), ['game_id' => 'id']);
+    }
+
+    public function getCategorys(){
+        return ArrayHelper::getColumn(
+            $this->getGameCategory()->all(),'category_id'
+        );
+    }
+
+    /*
+     * установим список категорий для игры
+     * список категорий к которым подвязана игра
+     */
+    public function setCategorys($categoryId){
+        $this->categorys = (array) $categoryId;
     }
 
     static function rus2translit($string) {
@@ -237,9 +292,36 @@ class Game extends \yii\db\ActiveRecord
 
     public function afterDelete()
     {
-        unlink($this->getPathImg());
-        unlink($this->getPathFlash());
+        if(file_exists($this->getPathImg())){
+            unlink($this->getPathImg());
+        }
+
+        if(file_exists($this->getPathFlash())){
+            unlink($this->getPathFlash());
+        }
+
+        //удалим привязку в таблице категорий к игре
+        GameCategory::deleteAll(['game_id'=>$this->id]);
+
         parent::afterDelete();
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+
+        if(!$this->isNewRecord){
+            //удалим привязку по игре, к старым указанным категориям ранее
+            GameCategory::deleteAll(['game_id'=>$this->id]);
+        }
+
+        $values = [];
+        foreach ($this->categorys as $id) {
+            $values[] = [$id, $this->id];
+        }
+
+        self::getDb()->createCommand()->batchInsert(GameCategory::tableName(), ['category_id', 'game_id'], $values)->execute();
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     private $_url;
@@ -249,6 +331,22 @@ class Game extends \yii\db\ActiveRecord
         return Url::to(['/game/view','alias'=>$this->alias]);
     }
 
+
+    public function getFlashPluginLink($params = []){
+        //ссылка на плагин для флеша
+        if($params){
+            $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать flash плагин']);
+        }
+        return Html::a('Скачать Флеш', 'http://get.adobe.com/flashplayer/', $params);
+    }
+
+    public function getUnityPluginLink($params = []){
+        if($params){
+            $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать плагин Unity3D']);
+        }
+        return Html::a('Скачать Unity3D', '/file/Unity3d.rar', $params);
+    }
+
     /*
      * в зависимости от типа игры формируем ссылку для скачивания нужного плагина для игры
      * $params - доп. параметры при формировании ссылки
@@ -256,17 +354,15 @@ class Game extends \yii\db\ActiveRecord
     public function getPluginLink($params = []){
         //ссылка на плагин от Unity 3D
         if($this->type_game==self::TYPE_GAME_UNITY3D){
-            if($params){
-                $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать плагин Unity3D']);
-            }
-            return Html::a('Скачать Unity3D', '/file/Unity3d.rar', $params);
+            return $this->getUnityPluginLink($params);
         }
-        //ссылка на плагин для флеша
+
         if($this->type_game==self::TYPE_GAME_FLASH){
-            if($params){
-                $params = BaseArrayHelper::merge($params, ['alt'=>'Скачать flash плагин']);
-            }
-            return Html::a('Скачать Флеш', 'http://get.adobe.com/flashplayer/', $params);
+            return $this->getFlashPluginLink($params);
+        }
+        //если код это код вставки с др. сайта, покажем 2 кнопки и на флеш-плеер и на юнити
+        if($this->type_game==self::TYPE_GAME_CODE){
+            return $this->getUnityPluginLink($params).' <br>'.$this->getFlashPluginLink($params);
         }
 
         return '';
@@ -311,8 +407,10 @@ class Game extends \yii\db\ActiveRecord
                     <param name="quality" value="high" />
                     <param name="wmode" value="direct" /
                     <param name="bgcolor" value="#ffffff" />
+                    <param value="allowScriptAccess" name="always">
                     <embed src="/flash/'.$this->file.'" quality="high" bgcolor="#ffffff"
                            width="'.$width.'" height="'.$height.'"  wmode="direct"
+
                            name="mymoviename" align="" type="application/x-shockwave-flash"
                            pluginspage="http://www.macromedia.com/go/getflashplayer">
                     </embed>

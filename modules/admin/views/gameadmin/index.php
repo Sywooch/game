@@ -8,7 +8,6 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-
 $this->title = 'Управление играми';
 ?>
 <div class="gameadmin-index">
@@ -21,20 +20,15 @@ $this->title = 'Управление играми';
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-        //['class' => 'yii\grid\SerialColumn'],
-
-        //'id',
         [
             'label'=>'ID',
             'value'=>'id',
             'attribute'=>'id',
-            'contentOptions'=>['style'=>'width:40px']
+            'contentOptions'=>['style'=>'width:90px']
         ],
         'title',
         'pagetitle',
         'alias',
-        //'status',
-
         [
             'label'=>'Статус',
             'value'=>'status',
@@ -49,21 +43,37 @@ $this->title = 'Управление играми';
 
         [
             'label'=>'Раздел',
-            'attribute' => 'category',
-            'value' => 'category.title',
+            'format' => 'raw',
+            'attribute' => 'categorys',
+            'value' => function($data){
+                $buttons = [];
+                foreach($data->relationCategory as $category){
+                    $buttons[] = ['label'=>$category->title,'options'=>['class'=>'btn btn-success']];
+                }
+                return  \yii\bootstrap\ButtonGroup::widget([
+                    'buttons' => $buttons,
+                    'options' => ['class' => 'btn-group-xs danger']
+                ]);
+            },
             'filter' => Html::activeDropDownList(
-                    $searchModel,
-                    'category_id',
-                    \yii\helpers\ArrayHelper::map(\app\models\Category::find()->all(),'id','title'),
-                    ['class' => 'form-control','prompt'=>'']
-                )
+                $searchModel,
+                'category',
+                \yii\helpers\ArrayHelper::map(\app\models\Category::find()->all(),'id','title'),
+                ['class' => 'form-control','prompt'=>'']
+            )
         ],
         [
             'label'=>'Отредактирован',
             'value'=>'updatedate',
-            'attribute'=>'updated_at'
+            'attribute'=>'updatedat',
+            'format' => 'raw',
+            'filter' => \yii\jui\DatePicker::widget([
+                'model'=>$searchModel,
+                'attribute'=>'updatedat',
+                'language' => 'ru',
+                'dateFormat' => 'yyyy-MM-dd'
+            ]),
         ],
-        //'updated_at',
 
         ['class' => 'yii\grid\ActionColumn'],
     ],

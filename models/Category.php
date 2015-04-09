@@ -16,6 +16,7 @@ use yii\helpers\Url;
  */
 class Category extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -23,6 +24,8 @@ class Category extends \yii\db\ActiveRecord
     {
         return '{{%category}}';
     }
+
+
 
     /**
      * @inheritdoc
@@ -61,10 +64,15 @@ class Category extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGames()
-    {
-        return $this->hasMany(Game::className(), ['category_id' => 'id']);
+//    public function getGameCategorys()
+//    {
+//        return $this->hasMany(GameCategory::className(), ['category_id' => 'id']);
+//    }
+
+    public function getGames(){
+        return $this->hasMany(Game::className(), ['id' => 'game_id'])->viaTable(GameCategory::tableName(), ['category_id'=>'id']);
     }
+
 
     /*
      * get all list category

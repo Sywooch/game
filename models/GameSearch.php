@@ -14,6 +14,7 @@ class GameSearch extends Game
 {
 
     public $category;
+    public $updatedat;//переменная для фильтрации по дате, игр
 
     /**
      * @inheritdoc
@@ -21,8 +22,8 @@ class GameSearch extends Game
     public function rules()
     {
         return [
-            [['id', 'category_id','publish_status'], 'integer'],
-            [['title', 'publish_status','file', 'img','alias','pagetitle','category'], 'safe'],
+            [['id', 'category','publish_status','updated_at'], 'integer'],
+            [['id','title', 'category','updatedat','updated_at','publish_status','file', 'img','alias','pagetitle'], 'safe'],
         ];
     }
 
@@ -50,7 +51,7 @@ class GameSearch extends Game
             'query' => $query,
         ]);
 
-        $query->joinWith(['category']);
+        $query->joinWith(['gameCategory']);
 
         $this->load($params);
 
@@ -63,7 +64,24 @@ class GameSearch extends Game
 
         $query->andFilterWhere([
             'tbl_game.id' => $this->id,
-            'tbl_game.category_id' => $this->category_id,
+        ]);
+
+        $query->groupBy('tbl_game.id');
+
+
+
+        //фильтр по дате поста, т.к. дата у нас в формате "time" в БД, а в форме лишь день-месяц-год, начинаем финтовать
+        if(!empty($this->updatedat)){
+
+            $beginOfDay = strtotime("midnight", strtotime($this->updatedat));
+            $endOfDay   = strtotime("tomorrow", $beginOfDay) - 1;
+
+            $query->andWhere(['<','tbl_game.updated_at', $endOfDay]);
+            $query->andWhere(['>','tbl_game.updated_at', $beginOfDay]);
+        }
+
+        $query->andFilterWhere([
+            'tbl_game_category.category_id' => $this->category,
         ]);
 
         $query->andFilterWhere(['like', 'tbl_game.title', $this->title])
@@ -71,13 +89,14 @@ class GameSearch extends Game
             ->andFilterWhere(['like', 'tbl_game.pagetitle', $this->pagetitle])
             ->andFilterWhere(['like', 'tbl_game.alias', $this->alias])
             ->andFilterWhere(['like', 'tbl_game.publish_status', $this->publish_status])
-            ->andFilterWhere(['like', 'tbl_category.title', $this->category])
             ->andFilterWhere(['like', 'tbl_game.img', $this->img]);
 
         $dataProvider->pagination = [
             'defaultPageSize' => Yii::$app->params['admin']['count_game_on_page'],
             //'pageSizeLimit' => [12, 100],
         ];
+
+
 
         return $dataProvider;
     }

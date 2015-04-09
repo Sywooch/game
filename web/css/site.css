@@ -110,6 +110,10 @@ div.game-desc{
     height: 90%;
 }
 
+#game-categorys>div.btn-primary.active{
+    background-color: #5cb85c;
+}
+
 div.input-group{
     width: 300px;
     /*border: 1px solid red;*/

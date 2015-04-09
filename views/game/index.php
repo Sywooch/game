@@ -1,7 +1,5 @@
 <?php
-use yii\widgets\ListView;
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\GameSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 
@@ -15,12 +13,5 @@ use yii\widgets\ListView;
 
     <h2>Новые игры</h2>
 
-    <?php
-        echo ListView::widget([
-            'dataProvider' => $dataProvider,
-            'itemView' => '_game',
-            'id'=>'main_game_list',
-            'layout' => '{items}',
-        ]);
-    ?>
+    <?php echo $this->render('_list_games', ['dataProvider'=>$dataProvider]);?>
 </div>

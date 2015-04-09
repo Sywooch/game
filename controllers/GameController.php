@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\GameCategory;
 use app\models\GameSearch;
 use Yii;
 use app\models\Game;
@@ -89,6 +90,7 @@ class GameController extends Controller
      */
     public function actionIndex()
     {
+
         //meta tags for page
         $this->view->title = Yii::$app->params['params_main_page']['title'];
         $this->view->registerMetaTag(['name' => 'keywords','content'=>Yii::$app->params['params_main_page']['keywords']]);
@@ -123,13 +125,14 @@ class GameController extends Controller
         $model = $this->findModel($alias);
 
         $query = Game::find()
+            ->joinWith('gameCategory')
             ->selectMain()
-            ->Where(['not in', 'id', $model->id])
-            ->category($model->category_id)
+            ->Where(['not in', 'tbl_game_category.game_id', $model->id])
+            ->andWhere(['in', 'tbl_game_category.category_id', $model->getCategorys()])
             ->publish()
             ->timepublish()
             ->limit(Yii::$app->params['count_similar_games_page_view'])
-            ->orderBy('updated_at DESC');
+            ->orderBy('tbl_game.updated_at DESC');
 
 
         $dataProvider = new ActiveDataProvider([

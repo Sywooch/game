@@ -27,16 +27,17 @@ class CategoryController extends Controller
     {
         $category = $this->findModel($alias);
 
-        $query = Game::find()
-            ->selectMain()
-            ->publish()
-            ->timepublish()
-            ->category($category->id)
+        $query = $category
+            ->getGames()
+            ->andWhere(['publish_status'=>Game::STATUS_PUBLISHED])
+            ->andWhere(['<','updated_at', time()])
             ->orderBy('updated_at DESC');
+
 
         //show all game list
         $gameProvider = new ActiveDataProvider([
             'query' => $query,
+            //'allmodels'=>$category->games,
             'pagination' => [
                 'pageSize' => Yii::$app->params['params_category_page']['count_games_on_page'],
             ],

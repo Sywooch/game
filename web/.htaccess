@@ -17,6 +17,8 @@ RewriteRule . index.php
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^ http%{ENV:protossl}://%1%{REQUEST_URI} [L,R=301]
 
+
+
 # кеширование в браузере на стороне пользователя
 <IfModule mod_expires.c>
 ExpiresActive On
@@ -31,12 +33,12 @@ ExpiresByType image/jpeg "access plus 1 year"
 ExpiresByType image/png "access plus 1 year"
 ExpiresByType image/jpg "access plus 1 year"
 ExpiresByType image/x-icon "access 1 year"
-ExpiresByType application/x-shockwave-flash "access 1 year"
+#ExpiresByType application/x-shockwave-flash "access 1 year"
 </IfModule>
 # Cache-Control
 <ifModule mod_headers.c>
-# 30 дней
-<filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf)$">
+# 30 дней  |swf
+<filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif)$">
 Header set Cache-Control "max-age=2592000, public"
 </filesMatch>
 # 30 дней

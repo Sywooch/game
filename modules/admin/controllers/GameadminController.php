@@ -9,11 +9,13 @@
 namespace app\modules\admin\controllers;
 
 
+use app\models\Category;
 use app\models\Game;
 use app\models\GameSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -72,6 +74,8 @@ class GameadminController extends BaseAdminController{
 
         $model = new Game();
 
+        $listCategory = ArrayHelper::map(Category::find()->all(),'id','title');
+
         $model->setScenario('create');
 
         //send POST - request to update
@@ -90,14 +94,22 @@ class GameadminController extends BaseAdminController{
 
             if ($model->validate()) {
 
+                if(empty($model->updated_at)){
+                    $model->updated_at = time();
+                }else{
+                    $model->updated_at = strtotime($model->updated_at);
+                }
+
                 if($model->file){
-                    $model->file->saveAs($dir.Yii::$app->params['upload_flash'] . $model->file->baseName . '.' . $model->file->extension);
+                    $model->file->saveAs($dir.Yii::$app->params['upload_flash'] . $model->alias . '.' . $model->file->extension);
+                    $model->file = $model->alias . '.' . $model->file->extension;
                 }else{
                     $model->file = $file;
                 }
 
                 if($model->img){
-                    $model->img->saveAs($dir.Yii::$app->params['upload_image'] . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image'] . $model->alias  . '.' . $model->img->extension);
+                    $model->img = $model->alias  . '.' . $model->img->extension;
                 }else{
                     $model->img = $img;
                 }
@@ -110,6 +122,7 @@ class GameadminController extends BaseAdminController{
 
         return $this->render('create', [
             'model' => $model,
+            'listCategory'=>$listCategory,
         ]);
     }
 
@@ -124,7 +137,7 @@ class GameadminController extends BaseAdminController{
 
         $dir = Yii::getAlias('@app/');
 
-        //Yii::$app->formatter->format('11-10-2014', 'date');
+        $listCategory = ArrayHelper::map(Category::find()->all(),'id','title');
 
         $model = $this->findModelId($id);
 
@@ -146,24 +159,25 @@ class GameadminController extends BaseAdminController{
 
             //если мы указали дату поста принудительно, то используем её для установки значения
             if($model->updated_at){
-                $model->updated_at = strtotime($model->updated_at);
+                $model->updated_at = $update_time_old;
             }else{
                 // если мы НЕ указывали значение, тогда установим текущее время
                 $model->updated_at = time();
             }
 
-
             if ($model->validate()) {
 
                 if($model->file){
-                    $model->file->saveAs($dir.Yii::$app->params['upload_flash']  . $model->file->baseName . '.' . $model->file->extension);
+                    $model->file->saveAs($dir.Yii::$app->params['upload_flash']  . $model->alias . '.' . $model->file->extension);
+                    $model->file = $model->alias  . '.' . $model->file->extension;
                 }else{
                     $model->file = $file;
                 }
 
                 if($model->img){
                     $prefix = uniqid('img_');
-                    $model->img->saveAs($dir.Yii::$app->params['upload_image']  . $model->img->baseName  . '.' . $model->img->extension);
+                    $model->img->saveAs($dir.Yii::$app->params['upload_image']  . $model->alias  . '.' . $model->img->extension);
+                    $model->img = $model->alias  . '.' . $model->img->extension;
                 }else{
                     $model->img = $img;
                 }
@@ -176,6 +190,7 @@ class GameadminController extends BaseAdminController{
 
         return $this->render('update', [
             'model' => $model,
+            'listCategory'=>$listCategory,
         ]);
     }
 
@@ -207,26 +222,20 @@ class GameadminController extends BaseAdminController{
         $model = $this->findModelId($id);
 
         //find others games from this category(similar-games)
-
         $query = Game::find()
-            ->Where(['not in', 'id', $model->id])
-            ->category($model->category_id)
+            ->joinWith('gameCategory')
+            ->selectMain()
+            ->Where(['not in', 'tbl_game_category.game_id', $model->id])
+            ->andWhere(['in', 'tbl_game_category.category_id', $model->getCategorys()])
             ->publish()
             ->timepublish()
             ->limit(Yii::$app->params['count_similar_games_page_view'])
-            ->orderBy('updated_at DESC');
+            ->orderBy('tbl_game.updated_at DESC');
 
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false,
-        ]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'defaultPageSize' => 16,
-            ],
         ]);
 
         return $this->render('@app/views/game/view', [

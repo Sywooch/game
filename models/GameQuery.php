@@ -15,29 +15,29 @@ class GameQuery extends ActiveQuery
 {
 
     public function selectMain(){
-        $this->select(['img','title','alias','id']);
+        $this->select(['tbl_game.img','tbl_game.title','tbl_game.alias','tbl_game.id']);
         return $this;
     }
 
     public function publish($status = Game::STATUS_PUBLISHED)
     {
-        $this->andWhere(['publish_status' => $status]);
+        $this->andWhere(['tbl_game.publish_status' => $status]);
         return $this;
     }
 
-    public function category($category = '')
-    {
-        if($category){
-            $this->andWhere(['category_id' => $category]);
-            return $this;
-        }else{
-            return $this;
-        }
-    }
+//    public function category($category = '')
+//    {
+//        if($category){
+//            $this->andWhere(['category_id' => $category]);
+//            return $this;
+//        }else{
+//            return $this;
+//        }
+//    }
 
     public function timepublish()
     {
-        $this->andWhere(['<','updated_at', time()]);
+        $this->andWhere(['<','tbl_game.updated_at', time()]);
         return $this;
     }
 
